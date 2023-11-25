@@ -6,7 +6,7 @@
   "private": true,
   "license": "UNLICENSED",
   "engines": {
-    "node": "12.x.x"
+    "node": "18.16.1"
   },
   "scripts": {
     "prebuild": "rimraf dist",
@@ -67,5 +67,8 @@
     "ts-node": "^9.0.0",
     "tsconfig-paths": "^3.9.0",
     "typescript": "^4.2.2"
+  },
+  "volta": {
+    "node": "18.16.1"
   }
 }
