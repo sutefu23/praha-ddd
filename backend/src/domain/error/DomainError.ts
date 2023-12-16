@@ -28,3 +28,10 @@ export class QueryError extends DomainError {
     this.name = 'QueryError'
   }
 }
+
+export class QueryNotFoundError extends DomainError {
+  constructor(message: string) {
+    super(message)
+    this.name = 'QueryNotFoundError'
+  }
+}

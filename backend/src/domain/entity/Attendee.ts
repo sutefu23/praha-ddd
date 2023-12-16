@@ -4,9 +4,13 @@ import { InvalidParameter } from '../error/DomainError'
 import { UUID } from '../valueObject/UUID'
 // 参加者
 export interface AttendeeProps extends EntityProps {
-  readonly uuid: UUID
+  readonly id: UUID
   readonly name: string
   readonly enrollment_status: EnrollmentStatus
+}
+
+export type UpdateAttendeeProps = Partial<AttendeeProps> & {
+  id: AttendeeProps['id']
 }
 
 export interface CreateAttendeeProps {
@@ -18,8 +22,8 @@ export class Attendee extends BaseEntity<AttendeeProps> {
     super(props)
   }
 
-  get uuid(): UUID {
-    return this.props.uuid
+  get id(): UUID {
+    return this.props.id
   }
 
   get name(): string {
@@ -47,17 +51,23 @@ export class Attendee extends BaseEntity<AttendeeProps> {
   public static create(
     createProps: CreateAttendeeProps,
   ): Attendee | InvalidParameter {
-    const uuid = UUID.new()
+    const id = UUID.new()
     const enrollment_status = EnrollmentStatus.of(StatusConst.ENROLLMENT)
     if (enrollment_status instanceof InvalidParameter) {
       return enrollment_status // as InvalidParameter
     }
     const props: AttendeeProps = {
-      uuid,
+      id,
       name: createProps.name,
       enrollment_status: enrollment_status,
     }
     return new Attendee(props)
+  }
+  public update(updateProps: UpdateAttendeeProps): Attendee {
+    return new Attendee({
+      ...this.props,
+      ...updateProps,
+    })
   }
   public static restore(restoreProps: AttendeeProps): Attendee {
     return new Attendee(restoreProps)

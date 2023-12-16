@@ -1,17 +1,10 @@
+import { Pair } from '../entity/Pair'
 import { QueryError } from '../error/DomainError'
-import { AttendeeDTO } from './IAttendeeQueryService'
+import { UUID } from '../valueObject/UUID'
 
 export interface IPairQueryService {
-  findPairById: (id: string) => Promise<PairDTO | null | QueryError>
-  findPairByName: (name: string) => Promise<PairDTO | null | QueryError>
-  findPairsByAttendeeId: (
-    attendeeId: string,
-  ) => Promise<PairDTO | null | QueryError>
-  findAllPairs: () => Promise<PairDTO[] | QueryError>
-}
-
-export type PairDTO = {
-  id: string
-  name: string
-  attendees: AttendeeDTO[]
+  findPairById: (id: UUID) => Promise<Pair | null | QueryError>
+  findPairByName: (name: string) => Promise<Pair | null | QueryError>
+  findPairsByAttendeeId: (attendeeId: UUID) => Promise<Pair | null | QueryError>
+  findAllPairs: () => Promise<Pair[] | QueryError>
 }

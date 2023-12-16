@@ -6,15 +6,15 @@ import { UUID } from '../valueObject/UUID'
 
 // 参加者所有課題
 export interface AttendeeAttachedTaskProps extends EntityProps {
-  readonly uuid: UUID
-  readonly attendeeUUId: Attendee['uuid']
-  readonly taskUUId: Task['uuid']
+  readonly id: UUID
+  readonly attendeeUUId: Attendee['id']
+  readonly taskUUId: Task['id']
   readonly status: TaskStatus
 }
 
 export interface CreateAttendeeAttachedTaskProps {
-  readonly attendeeUUId: Attendee['uuid']
-  readonly taskUUId: Task['uuid']
+  readonly attendeeUUId: Attendee['id']
+  readonly taskUUId: Task['id']
   readonly status: TaskStatus
 }
 
@@ -23,8 +23,8 @@ export class AttendeeAttachedTask extends BaseEntity<AttendeeAttachedTaskProps> 
     super(props)
   }
 
-  get uuid(): UUID {
-    return this.props.uuid
+  get id(): UUID {
+    return this.props.id
   }
 
   setContent(content: string) {
@@ -38,7 +38,7 @@ export class AttendeeAttachedTask extends BaseEntity<AttendeeAttachedTaskProps> 
     createProps: CreateAttendeeAttachedTaskProps,
   ): AttendeeAttachedTask {
     const props: AttendeeAttachedTaskProps = {
-      uuid: UUID.new(),
+      id: UUID.new(),
       ...createProps,
     }
     return new AttendeeAttachedTask(props)

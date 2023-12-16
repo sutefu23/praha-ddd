@@ -1,17 +1,12 @@
+import { Team } from '../entity/Team'
 import { QueryError } from '../error/DomainError'
-import { AttendeeDTO } from './IAttendeeQueryService'
+import { UUID } from '../valueObject/UUID'
 
 export interface ITeamQueryService {
-  findTeamById: (id: string) => Promise<TeamDTO | null | QueryError>
-  findTeamByName: (name: string) => Promise<TeamDTO | null | QueryError>
+  findTeamById: (id: UUID) => Promise<Team | null | QueryError>
+  findTeamByName: (name: string) => Promise<Team | null | QueryError>
   findTeamsByAttendeeId: (
     attendeeId: string,
-  ) => Promise<TeamDTO | null | QueryError>
-  findAllTeams: () => Promise<TeamDTO[] | QueryError>
-}
-
-export type TeamDTO = {
-  id: string
-  name: string
-  attendees: AttendeeDTO[]
+  ) => Promise<Team | null | QueryError>
+  findAllTeams: () => Promise<Team[] | QueryError>
 }

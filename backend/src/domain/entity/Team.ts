@@ -6,7 +6,7 @@ import { TeamName } from '../valueObject/TeamName'
 
 // チーム
 export interface TeamProps extends EntityProps {
-  readonly uuid: UUID
+  readonly id: UUID
   readonly name: TeamName
   readonly attendees: TeamAttendees
 }
@@ -21,8 +21,8 @@ export class Team extends BaseEntity<TeamProps> {
     super(props)
   }
 
-  get uuid(): UUID {
-    return this.props.uuid
+  get id(): UUID {
+    return this.props.id
   }
 
   get name(): TeamName {
@@ -59,9 +59,9 @@ export class Team extends BaseEntity<TeamProps> {
   public static create(
     createProps: CreateTeamProps,
   ): Team | UnPemitedOperation {
-    const uuid = UUID.new()
+    const id = UUID.new()
     const props: TeamProps = {
-      uuid,
+      id,
       name: createProps.name,
       attendees: createProps.attendees,
     }

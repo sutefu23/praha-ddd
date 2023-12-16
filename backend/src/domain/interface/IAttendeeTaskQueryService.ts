@@ -1,23 +1,17 @@
+import { AttendeeAttachedTask } from '../entity/AttendeeAttachedTask'
 import { QueryError } from '../error/DomainError'
 
 export interface IAttendeeAttachedTaskQueryService {
   findAttendeeAttachedTaskById: (
     id: string,
-  ) => Promise<AttendeeAttachedTaskDTO | null | QueryError>
+  ) => Promise<AttendeeAttachedTask | null | QueryError>
   findAttendeeAttachedTaskByName: (
     name: string,
-  ) => Promise<AttendeeAttachedTaskDTO | null | QueryError>
+  ) => Promise<AttendeeAttachedTask | null | QueryError>
   findAttendeeAttachedTasksByTeamId: (
     teamId: string,
-  ) => Promise<AttendeeAttachedTaskDTO[] | QueryError>
+  ) => Promise<AttendeeAttachedTask[] | QueryError>
   findAllAttendeeAttachedTasks: () => Promise<
-    AttendeeAttachedTaskDTO[] | QueryError
+    AttendeeAttachedTask[] | QueryError
   >
-}
-
-export type AttendeeAttachedTaskDTO = {
-  uuid: string
-  attendeeUUId: string
-  taskUUId: string
-  status: string
 }
