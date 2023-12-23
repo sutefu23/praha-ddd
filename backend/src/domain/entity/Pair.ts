@@ -1,19 +1,20 @@
 import { BaseEntity, EntityProps } from 'src/domain/entity/base/Entity'
 import { Attendee } from './Attendee'
-import { UnPemitedOperation } from '../error/DomainError'
+import { UnPemitedOperationError } from '../error/DomainError'
 import { UUID } from '../valueObject/UUID'
 import { PairName } from '../valueObject/PairName'
+import { AttendeeCollection } from './collection/AttendeeCollection'
 
 // ペア
 export interface PairProps extends EntityProps {
-  readonly uuid: UUID
+  readonly id: UUID
   readonly name: PairName
-  readonly attendees: PairAttendees
+  readonly attendees: AttendeeCollection
 }
 
 export interface CreatePairProps {
   readonly name: PairName
-  readonly attendees: PairAttendees
+  readonly attendees: AttendeeCollection
 }
 
 export class Pair extends BaseEntity<PairProps> {
@@ -21,36 +22,39 @@ export class Pair extends BaseEntity<PairProps> {
     super(props)
   }
 
-  get uuid(): UUID {
-    return this.props.uuid
+  get id(): UUID {
+    return this.props.id
   }
 
   get name(): PairName {
     return this.props.name
   }
 
-  get attendees(): PairAttendees {
+  get attendees(): AttendeeCollection {
     return this.props.attendees
   }
 
   setAttendee(attendee: Attendee) {
     const new_attendees = this.attendees.add(attendee)
-    if (new_attendees instanceof UnPemitedOperation) {
-      return new_attendees // as UnPemitedOperation
+    if (new_attendees.length >= 4) {
+      throw new UnPemitedOperationError('4人以上のペアは作成できません')
     }
 
-    return Pair.create({
+    return Pair.regen({
       ...this.props,
       attendees: new_attendees,
     })
   }
-  deleteAttendee(attendee: Attendee) {
+  deleteAttendee(attendee: Attendee, onLessWarning: () => unknown) {
     const new_attendees = this.attendees.delete(attendee)
-    if (new_attendees instanceof UnPemitedOperation) {
-      return new_attendees // as UnPemitedOperation
-    }
 
-    return Pair.create({
+    if (onLessWarning == undefined)
+      throw new Error('onLessWarning is must be defined.')
+
+    if (new_attendees.length <= 1) {
+      onLessWarning()
+    }
+    return Pair.regen({
       ...this.props,
       attendees: new_attendees,
     })
@@ -58,65 +62,24 @@ export class Pair extends BaseEntity<PairProps> {
 
   public static create(
     createProps: CreatePairProps,
-  ): Pair | UnPemitedOperation {
-    const uuid = UUID.new()
+  ): Pair | UnPemitedOperationError {
+    const id = UUID.new()
     const props: PairProps = {
-      uuid,
+      id,
       name: createProps.name,
       attendees: createProps.attendees,
     }
+    if (createProps.attendees.length >= 4) {
+      throw new UnPemitedOperationError('4人以上のペアは作成できません')
+    }
+    if (createProps.attendees.length <= 1) {
+      throw new UnPemitedOperationError('1人以下のペアは作成できません')
+    }
+
     return new Pair(props)
   }
 
-  public static restore(restoreProps: PairProps): Pair {
-    return new Pair(restoreProps)
-  }
-}
-
-// ペア参加者の数におけるドメインロジックを集約させたかったので別で定義
-class PairAttendees {
-  private attendees: Attendee[]
-  private constructor(attendees: Attendee[]) {
-    if (attendees.length < 2) {
-      throw new UnPemitedOperation(
-        'ペアには少なくとも2人以上の参加者が必要です',
-      )
-    }
-    if (attendees.length >= 4) {
-      throw new UnPemitedOperation('4人以上のペアは作成できません')
-    }
-
-    this.attendees = attendees
-  }
-  static create(attendees: Attendee[]) {
-    try {
-      return new PairAttendees(attendees)
-    } catch (e) {
-      if (e instanceof UnPemitedOperation) {
-        return e
-      }
-      throw e
-    }
-  }
-
-  add(attendee: Attendee): PairAttendees | UnPemitedOperation {
-    try {
-      return new PairAttendees([...this.attendees, attendee])
-    } catch (e) {
-      if (e instanceof UnPemitedOperation) {
-        return e
-      }
-      throw e
-    }
-  }
-  delete(attendee: Attendee) {
-    try {
-      return new PairAttendees([...this.attendees, attendee])
-    } catch (e) {
-      if (e instanceof UnPemitedOperation) {
-        return e
-      }
-      throw e
-    }
+  public static regen(regenProps: PairProps): Pair {
+    return new Pair(regenProps)
   }
 }

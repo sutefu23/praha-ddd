@@ -1,6 +1,6 @@
 import { BaseEntity, EntityProps } from 'src/domain/entity/base/Entity'
 import { EnrollmentStatus, StatusConst } from '../valueObject/EnrollmentStatus'
-import { InvalidParameter } from '../error/DomainError'
+import { InvalidParameterError } from '../error/DomainError'
 import { UUID } from '../valueObject/UUID'
 // 参加者
 export interface AttendeeProps extends EntityProps {
@@ -40,7 +40,6 @@ export class Attendee extends BaseEntity<AttendeeProps> {
       name,
     })
   }
-
   setEnrollmentStatus(enrollment_status: EnrollmentStatus) {
     return new Attendee({
       ...this.props,
@@ -50,11 +49,11 @@ export class Attendee extends BaseEntity<AttendeeProps> {
 
   public static create(
     createProps: CreateAttendeeProps,
-  ): Attendee | InvalidParameter {
+  ): Attendee | InvalidParameterError {
     const id = UUID.new()
     const enrollment_status = EnrollmentStatus.of(StatusConst.ENROLLMENT)
-    if (enrollment_status instanceof InvalidParameter) {
-      return enrollment_status // as InvalidParameter
+    if (enrollment_status instanceof InvalidParameterError) {
+      return enrollment_status // as InvalidParameterError
     }
     const props: AttendeeProps = {
       id,
@@ -63,13 +62,8 @@ export class Attendee extends BaseEntity<AttendeeProps> {
     }
     return new Attendee(props)
   }
-  public update(updateProps: UpdateAttendeeProps): Attendee {
-    return new Attendee({
-      ...this.props,
-      ...updateProps,
-    })
-  }
-  public static restore(restoreProps: AttendeeProps): Attendee {
-    return new Attendee(restoreProps)
+
+  public static regen(regenProps: AttendeeProps): Attendee {
+    return new Attendee(regenProps)
   }
 }

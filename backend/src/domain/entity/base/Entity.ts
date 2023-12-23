@@ -17,7 +17,7 @@ export class BaseEntity<T extends EntityProps> {
     console.log(props)
     throw new Error('Method not implemented.')
   }
-  restore(props: T): BaseEntity<T> {
+  regen(props: T): BaseEntity<T> {
     console.log(props)
     throw new Error('Method not implemented.')
   }

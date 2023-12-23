@@ -1,5 +1,5 @@
 import { ValueObject } from 'src/domain/valueObject/base/ValueObject'
-import { InvalidParameter } from '../error/DomainError'
+import { InvalidParameterError } from '../error/DomainError'
 
 export const StatusConst = {
   NOT_STARTED: '未着手',
@@ -13,9 +13,9 @@ export class TaskStatus extends ValueObject<StatusEnum> {
   private constructor(value: StatusEnum) {
     super(value)
   }
-  public static of(value: StatusEnum): TaskStatus | InvalidParameter {
+  public static of(value: StatusEnum): TaskStatus | InvalidParameterError {
     if (!Object.values(StatusConst).includes(value)) {
-      return new InvalidParameter('不正な値です')
+      return new InvalidParameterError('不正な値です')
     }
     return new TaskStatus(value)
   }

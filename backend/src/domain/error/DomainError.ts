@@ -4,16 +4,16 @@ export class DomainError extends Error {
     this.name = 'DomainError'
   }
 }
-export class InvalidParameter extends DomainError {
+export class InvalidParameterError extends DomainError {
   constructor(message: string) {
     super(message)
-    this.name = 'InvalidParameter'
+    this.name = 'InvalidParameterError'
   }
 }
-export class UnPemitedOperation extends DomainError {
+export class UnPemitedOperationError extends DomainError {
   constructor(message: string) {
     super(message)
-    this.name = 'UnPemitedOperation'
+    this.name = 'UnPemitedOperationError'
   }
 }
 export class RepositoryError extends DomainError {
@@ -33,5 +33,12 @@ export class QueryNotFoundError extends DomainError {
   constructor(message: string) {
     super(message)
     this.name = 'QueryNotFoundError'
+  }
+}
+
+export class ActionError extends DomainError {
+  constructor(message: string) {
+    super(message)
+    this.name = 'ActionError'
   }
 }

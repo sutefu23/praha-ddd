@@ -44,9 +44,9 @@ export class AttendeeAttachedTask extends BaseEntity<AttendeeAttachedTaskProps> 
     return new AttendeeAttachedTask(props)
   }
 
-  public static restore(
-    restoreProps: AttendeeAttachedTaskProps,
+  public static regen(
+    regenProps: AttendeeAttachedTaskProps,
   ): AttendeeAttachedTask {
-    return new AttendeeAttachedTask(restoreProps)
+    return new AttendeeAttachedTask(regenProps)
   }
 }

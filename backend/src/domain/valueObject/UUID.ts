@@ -1,5 +1,5 @@
 import { ValueObject } from 'src/domain/valueObject/base/ValueObject'
-import { InvalidParameter } from '../error/DomainError'
+import { InvalidParameterError } from '../error/DomainError'
 import { v4 as uuidv4, validate } from 'uuid'
 export class UUID extends ValueObject<string> {
   private constructor(value: string) {
@@ -9,9 +9,9 @@ export class UUID extends ValueObject<string> {
     const uuid = generateUUID()
     return new UUID(uuid)
   }
-  public static of(value: string): UUID | InvalidParameter {
+  public static of(value: string): UUID | InvalidParameterError {
     if (!isValieUUID(value)) {
-      return new InvalidParameter('不正な値です')
+      return new InvalidParameterError('不正な値です')
     }
     return new UUID(value)
   }

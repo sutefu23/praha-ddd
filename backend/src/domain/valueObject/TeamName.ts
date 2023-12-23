@@ -1,17 +1,19 @@
 import { ValueObject } from 'src/domain/valueObject/base/ValueObject'
-import { InvalidParameter } from '../error/DomainError'
+import { InvalidParameterError } from '../error/DomainError'
 
 export class TeamName extends ValueObject<string> {
   private constructor(value: string) {
     super(value)
   }
-  public static of(value: string): TeamName | InvalidParameter {
+  public static of(value: string): TeamName | InvalidParameterError {
     if (value.length <= 3) {
-      return new InvalidParameter('チーム名は3文字以下でなければなりません')
+      return new InvalidParameterError(
+        'チーム名は3文字以下でなければなりません',
+      )
     }
 
     if (!/^[0-9]+$/.test(value)) {
-      return new InvalidParameter('チーム名は数字のみでなければなりません')
+      return new InvalidParameterError('チーム名は数字のみでなければなりません')
     }
 
     return new TeamName(value)

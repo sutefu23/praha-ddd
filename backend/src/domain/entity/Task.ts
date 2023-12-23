@@ -45,7 +45,7 @@ export class Task extends BaseEntity<TaskProps> {
     return new Task(props)
   }
 
-  public static restore(restoreProps: TaskProps): Task {
-    return new Task(restoreProps)
+  public static regen(regenProps: TaskProps): Task {
+    return new Task(regenProps)
   }
 }

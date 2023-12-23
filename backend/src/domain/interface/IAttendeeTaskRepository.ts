@@ -1,9 +1,10 @@
 import { AttendeeAttachedTask } from '../entity/AttendeeAttachedTask'
 import { RepositoryError } from '../error/DomainError'
-
-export interface IAttendeeAttachedTaskTaskRepository {
+import { UUID } from '../valueObject/UUID'
+import { BaseRepository } from './base/BaseRepository'
+export interface IAttendeeAttachedTaskTaskRepository extends BaseRepository {
   save: (
     AttendeeAttachedTask: AttendeeAttachedTask,
-  ) => Promise<AttendeeAttachedTask | RepositoryError>
-  delete: (name: string) => Promise<AttendeeAttachedTask | RepositoryError>
+  ) => Promise<void | RepositoryError>
+  delete: (id: UUID) => Promise<void | RepositoryError>
 }

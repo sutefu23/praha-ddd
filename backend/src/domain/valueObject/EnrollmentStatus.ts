@@ -1,5 +1,5 @@
 import { ValueObject } from 'src/domain/valueObject/base/ValueObject'
-import { InvalidParameter } from '../error/DomainError'
+import { InvalidParameterError } from '../error/DomainError'
 
 export const StatusConst = {
   ENROLLMENT: '在籍中',
@@ -13,9 +13,11 @@ export class EnrollmentStatus extends ValueObject<StatusEnum> {
   private constructor(value: StatusEnum) {
     super(value)
   }
-  public static of(value: StatusEnum): EnrollmentStatus | InvalidParameter {
+  public static of(
+    value: StatusEnum,
+  ): EnrollmentStatus | InvalidParameterError {
     if (!Object.values(StatusConst).includes(value)) {
-      return new InvalidParameter('不正な値です')
+      return new InvalidParameterError('不正な値です')
     }
     return new EnrollmentStatus(value)
   }
