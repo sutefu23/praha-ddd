@@ -1,20 +1,21 @@
 import { BaseEntity, EntityProps } from 'src/domain/entity/base/Entity'
-import { Attendee } from './Attendee'
-import { UnPemitedOperationError } from '../error/DomainError'
+import { Pair } from './Pair'
+
 import { UUID } from '../valueObject/UUID'
 import { TeamName } from '../valueObject/TeamName'
+import { PairCollection } from './collection/PairCollection'
 import { AttendeeCollection } from './collection/AttendeeCollection'
 
 // チーム
 export interface TeamProps extends EntityProps {
   readonly id: UUID
   readonly name: TeamName
-  readonly attendees: AttendeeCollection
+  readonly pairs: Pair[]
 }
 
 export interface CreateTeamProps {
   readonly name: TeamName
-  readonly attendees: AttendeeCollection
+  readonly pairs: Pair[]
 }
 
 export class Team extends BaseEntity<TeamProps> {
@@ -30,44 +31,44 @@ export class Team extends BaseEntity<TeamProps> {
     return this.props.name
   }
 
-  get attendees(): AttendeeCollection {
-    return this.props.attendees
+  get pairs(): PairCollection {
+    return new PairCollection(this.props.pairs)
   }
 
-  setAttendee(attendee: Attendee) {
-    const new_attendees = this.attendees.add(attendee)
-    return Team.regen({
+  getAllAttendees(): AttendeeCollection {
+    const attendees = this.pairs.map((pair) => pair.attendees).flat()
+    return new AttendeeCollection(attendees)
+  }
+
+  addPair(pair: Pair) {
+    const new_pair = this.pairs.add(pair)
+    return new Team({
       ...this.props,
-      attendees: new_attendees,
+      pair: new_pair,
     })
   }
 
-  deleteAttendee(attendee: Attendee, onLessWarning: () => unknown) {
-    const new_attendees = this.attendees.delete(attendee)
-    if (onLessWarning == undefined)
-      throw new Error('onLessWarning is must be defined.')
-    if (new_attendees.length < 2) {
-      onLessWarning()
-    }
-    return Team.regen({
+  deletePair(pair: Pair) {
+    const new_pairs = this.pairs.delete(pair)
+
+    return new Team({
       ...this.props,
-      attendees: new_attendees,
+      pairs: new_pairs,
     })
   }
 
-  public static create(
-    createProps: CreateTeamProps,
-  ): Team | UnPemitedOperationError {
+  public static create(createProps: CreateTeamProps): Team | TeamTooLess {
     const id = UUID.new()
     const props: TeamProps = {
       id,
       name: createProps.name,
-      attendees: createProps.attendees,
+      pairs: createProps.pairs,
     }
-    if (createProps.attendees.length <= 3) {
-      throw new UnPemitedOperationError(
-        'チームには最低3人以上いなければなりません。',
-      )
+    const attendees = createProps.pairs.flatMap((pair) => pair.attendees)
+
+    if (attendees.length < 3) {
+      console.warn('チームには最低3人以上いなければなりません。' + this.name)
+      return TeamTooLess.create(props)
     }
     return new Team(props)
   }
@@ -76,3 +77,5 @@ export class Team extends BaseEntity<TeamProps> {
     return new Team(regenProps)
   }
 }
+
+export class TeamTooLess extends Team {}

@@ -4,8 +4,6 @@ import {
   InvalidParameterError,
   QueryError,
   QueryNotFoundError,
-  RepositoryError,
-  UnPemitedOperationError,
 } from '../error/DomainError'
 import {
   StatusConst as EnrollmentConst,
@@ -13,21 +11,16 @@ import {
 } from '../valueObject/EnrollmentStatus'
 import { UUID } from '../valueObject/UUID'
 import { IAttendeeQueryService } from '../interface/IAttendeeQueryService'
-import { IAttendeeRepository } from '../interface/IAttendeeRepository'
 import { ISendMailAction } from '../interface/ISendMailAction'
 import { IPairQueryService } from '../interface/IPairQueryService'
-import { IPairRepository } from '../interface/IPairRepository'
 import { ITeamQueryService } from '../interface/ITeamQueryService'
-import { ITeamRepository } from '../interface/ITeamRepository'
+import { DeleteAttendeeService } from '../service/DeleteAttendeeService'
 
-export class AttendeeWithDrawalUsecase {
+export class AttendeeWithdrawalUsecase {
   constructor(
-    private readonly attendeeRepository: IAttendeeRepository,
     private readonly attendeeQueryService: IAttendeeQueryService,
     private readonly teamQueryService: ITeamQueryService,
-    private readonly teamRepository: ITeamRepository,
     private readonly pairQueryService: IPairQueryService,
-    private readonly pairRepository: IPairRepository,
     private readonly sendMailAction: ISendMailAction,
   ) {}
 
@@ -73,43 +66,49 @@ export class AttendeeWithDrawalUsecase {
       return new QueryNotFoundError('所属するペアが見つかりません。')
     }
 
-    const modifiedTeam = team.deleteAttendee(attendee, () => {
-      // 人数が少なくなった時の処理
-      const mailRes = this.sendMailAction.sendToAdmin(
-        `${modifiedAttendee.name}さんがペアを辞めました。`,
-        `${modifiedAttendee.name}さんの在籍ステータスが${
-          modifiedAttendee.enrollment_status
-        }となりました。
-        それにより所属チーム${modifiedTeam.name}が2名以下になりました。
-        現在の参加者: ${modifiedTeam.attendees.map((a) => a.name).join(', ')}`,
-      )
-      if (mailRes instanceof ActionError) {
-        return mailRes // as ActionError
-      }
-    })
-    if (modifiedTeam instanceof UnPemitedOperationError) {
-      return modifiedTeam // as UnPemitedOperationError
-    }
-
-    const modifiedPair = pair.deleteAttendee(attendee, () => {
-      // 人数が少なくなった時の処理
-      const mailRes = this.sendMailAction.sendToAdmin(
-        `${modifiedAttendee.name}さんがペアを辞めました。`,
-        `${modifiedAttendee.name}さんの在籍ステータスが${
-          modifiedAttendee.enrollment_status
-        }となりました。
-        それにより所属ペア${modifiedPair.name}が1名以下になりました。
-        現在の参加者: ${modifiedPair.attendees.map((a) => a.name).join(', ')}`,
-      )
-      if (mailRes instanceof ActionError) {
-        return mailRes // as ActionError
-      }
-    })
-
-    const res = await this.attendeeRepository.save(modifiedAttendee)
-    if (res instanceof RepositoryError) {
-      return res // as RepositoryError
-    }
+    const deleteService = new DeleteAttendeeService(team)
+    deleteService.deleteAttendee(
+      attendee,
+      () => {
+        const mailRes = this.sendMailAction.sendToAdmin(
+          `${modifiedAttendee.name}さんがペアを辞めました。`,
+          `${modifiedAttendee.name}さんの在籍ステータスが${
+            modifiedAttendee.enrollment_status
+          }となりました。
+        それにより所属チーム${team.name}が2名以下になりました。
+        現在の${team.name}参加者:\n
+         ${team
+           .getAllAttendees()
+           .map((a) => a.name)
+           .join(', ')}`,
+        )
+        if (mailRes instanceof ActionError) {
+          console.error(
+            'チーム参加者が減った事による管理者通知メールの送信に失敗しました。\n',
+            mailRes,
+          )
+        }
+      },
+      () => {
+        const mailRes = this.sendMailAction.sendToAdmin(
+          `ペア${pair}の自動割当が出来ません。`,
+          `${modifiedAttendee.name}さんの在籍ステータスが${
+            modifiedAttendee.enrollment_status
+          }となりました。
+          \nペア${pair}を辞めたことで自動で残りのメンバーの割当を行いましたが、
+          チーム内に合流可能なペアがありません。
+          現在のペア${pair.name}の参加者:\n
+           ${pair.attendees.map((a) => a.name).join(', ')}\n
+          手動で割り当ててください。`,
+        )
+        if (mailRes instanceof ActionError) {
+          console.error(
+            'ペアの自動割合が失敗したことによる管理者通知メールの送信に失敗しました。\n',
+            mailRes,
+          )
+        }
+      },
+    )
 
     return modifiedAttendee
   }

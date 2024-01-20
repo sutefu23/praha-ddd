@@ -16,6 +16,14 @@ export class UnPemitedOperationError extends DomainError {
     this.name = 'UnPemitedOperationError'
   }
 }
+
+export class NoEffectiveOperationError extends DomainError {
+  constructor(message: string) {
+    super(message)
+    this.name = 'NoEffectiveOperationError'
+  }
+}
+
 export class RepositoryError extends DomainError {
   constructor(message: string) {
     super(message)

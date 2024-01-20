@@ -9,12 +9,48 @@ import { AttendeeCollection } from './collection/AttendeeCollection'
 export interface PairProps extends EntityProps {
   readonly id: UUID
   readonly name: PairName
-  readonly attendees: AttendeeCollection
+  readonly attendees: Attendee[]
 }
 
 export interface CreatePairProps {
   readonly name: PairName
-  readonly attendees: AttendeeCollection
+  readonly attendees: Attendee[]
+}
+// UnPemitedOperationErrorのサブクラス
+export class PairAttendeeTooManyError extends UnPemitedOperationError {
+  constructor(message: string) {
+    super(message)
+    this.name = 'PairAttendeeTooManyError'
+  }
+}
+// UnPemitedOperationErrorのサブクラス
+export class PairAttendeeTooLessError extends UnPemitedOperationError {
+  constructor(message: string) {
+    super(message)
+    this.name = 'PairAttendeeTooLessError'
+  }
+}
+
+export class PairAttendeeCollection extends AttendeeCollection {
+  constructor(attendees: Attendee[]) {
+    super(attendees)
+  }
+  static add(
+    attendees: Attendee[],
+  ): AttendeeCollection | PairAttendeeTooManyError {
+    if (attendees.length >= 4) {
+      return new PairAttendeeTooManyError('4人以上のペアは作成できません')
+    }
+    return new AttendeeCollection(attendees)
+  }
+  static delete(
+    attendees: Attendee[],
+  ): AttendeeCollection | PairAttendeeTooLessError {
+    if (attendees.length <= 1) {
+      return new PairAttendeeTooLessError('1人以下のペアは作成できません')
+    }
+    return new AttendeeCollection(attendees)
+  }
 }
 
 export class Pair extends BaseEntity<PairProps> {
@@ -30,50 +66,38 @@ export class Pair extends BaseEntity<PairProps> {
     return this.props.name
   }
 
-  get attendees(): AttendeeCollection {
-    return this.props.attendees
+  get attendees(): PairAttendeeCollection {
+    return new PairAttendeeCollection(this.props.attendees)
   }
 
-  setAttendee(attendee: Attendee) {
-    const new_attendees = this.attendees.add(attendee)
-    if (new_attendees.length >= 4) {
-      throw new UnPemitedOperationError('4人以上のペアは作成できません')
+  addAttendee(attendee: Attendee) {
+    const new_collection = this.attendees.add(attendee)
+    if (new_collection instanceof PairAttendeeTooManyError) {
+      return new_collection // as PairAttendeeTooManyError
     }
-
-    return Pair.regen({
+    return new Pair({
       ...this.props,
-      attendees: new_attendees,
+      attendees: new_collection,
     })
   }
-  deleteAttendee(attendee: Attendee, onLessWarning: () => unknown) {
+
+  deleteAttendee(attendee: Attendee) {
     const new_attendees = this.attendees.delete(attendee)
-
-    if (onLessWarning == undefined)
-      throw new Error('onLessWarning is must be defined.')
-
-    if (new_attendees.length <= 1) {
-      onLessWarning()
+    if (new_attendees instanceof PairAttendeeTooLessError) {
+      return new_attendees // as PairAttendeeTooLessError
     }
-    return Pair.regen({
+    return new Pair({
       ...this.props,
       attendees: new_attendees,
     })
   }
 
-  public static create(
-    createProps: CreatePairProps,
-  ): Pair | UnPemitedOperationError {
+  public static create(createProps: CreatePairProps): Pair {
     const id = UUID.new()
     const props: PairProps = {
       id,
       name: createProps.name,
       attendees: createProps.attendees,
-    }
-    if (createProps.attendees.length >= 4) {
-      throw new UnPemitedOperationError('4人以上のペアは作成できません')
-    }
-    if (createProps.attendees.length <= 1) {
-      throw new UnPemitedOperationError('1人以下のペアは作成できません')
     }
 
     return new Pair(props)

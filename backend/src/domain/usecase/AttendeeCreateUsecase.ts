@@ -17,17 +17,15 @@ export class AttendeeCreateUsecase {
   async exec(
     attendeeProps: CreateAttendeeProps,
   ): Promise<Attendee | InvalidParameterError | RepositoryError> {
-    const hasAttendee = await this.attendeeQueryService.findAttendeeByName(
-      attendeeProps.name,
+    const hasAttendee = await this.attendeeQueryService.findAttendeeByEmail(
+      attendeeProps.email,
     )
     if (hasAttendee instanceof QueryError) {
       return hasAttendee // as QueryError
     }
 
     if (hasAttendee !== null) {
-      return new InvalidParameterError(
-        '同名の参加者が既に存在します。別の名前を指定してください。',
-      )
+      return new InvalidParameterError('同じメールの登録者が既に存在します。')
     }
     const attendee = Attendee.create(attendeeProps)
     if (attendee instanceof InvalidParameterError) {

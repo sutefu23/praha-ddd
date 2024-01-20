@@ -6,6 +6,7 @@ import { UUID } from '../valueObject/UUID'
 export interface AttendeeProps extends EntityProps {
   readonly id: UUID
   readonly name: string
+  readonly email: string
   readonly enrollment_status: EnrollmentStatus
 }
 
@@ -15,6 +16,7 @@ export type UpdateAttendeeProps = Partial<AttendeeProps> & {
 
 export interface CreateAttendeeProps {
   readonly name: string
+  readonly email: string
 }
 
 export class Attendee extends BaseEntity<AttendeeProps> {
@@ -28,6 +30,10 @@ export class Attendee extends BaseEntity<AttendeeProps> {
 
   get name(): string {
     return this.props.name
+  }
+
+  get email(): string {
+    return this.props.email
   }
 
   get enrollment_status(): EnrollmentStatus {
@@ -58,6 +64,7 @@ export class Attendee extends BaseEntity<AttendeeProps> {
     const props: AttendeeProps = {
       id,
       name: createProps.name,
+      email: createProps.email,
       enrollment_status: enrollment_status,
     }
     return new Attendee(props)
