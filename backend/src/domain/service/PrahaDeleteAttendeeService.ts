@@ -1,29 +1,38 @@
 import { Attendee } from '../entity/Attendee'
-import { Team } from '../entity/Team'
 import {
   Pair,
   PairAttendeeTooLessError,
   PairAttendeeTooManyError,
 } from '../entity/Pair'
+import { TeamCollection } from '../entity/collection/TeamCollection'
 import { UnPemitedOperationError } from '../error/DomainError'
 
-import { PairCollection } from '../entity/collection/PairCollection'
-export class DeleteAttendeeService {
-  constructor(private team: Team) {}
+export class PrahaDeleteAttendeeService {
+  constructor(private allTeams: TeamCollection) {}
 
   deleteAttendee(
     attendee: Attendee,
     onLessPairAlartAction: () => unknown,
     onUnableAllocateAction: () => unknown,
-  ): Team | UnPemitedOperationError {
-    const pair = this.team.pairs.find((pair) => pair.attendees.has(attendee))
-    if (!pair) {
+  ): TeamCollection | UnPemitedOperationError {
+    const belong_pair = this.allTeams.allPairs.find((pair) =>
+      pair.attendees.has(attendee),
+    )
+    if (!belong_pair) {
       return new UnPemitedOperationError(
         '該当の参加者のチーム内のペアへの所属が確認できませんでした。',
       )
     }
-    const attendeeDeletedPair = pair?.deleteAttendee(attendee)
-    const otherPairs = this.team.pairs.delete(pair)
+
+    const belong_team = this.allTeams.find((team) =>
+      team.pairs.has(belong_pair),
+    )
+    if (!belong_team) {
+      return new UnPemitedOperationError(
+        '該当の参加者のチームが確認できませんでした。',
+      )
+    }
+    const attendeeDeletedPair = belong_pair?.deleteAttendee(attendee)
 
     // ペアが少なすぎるため自動で割り当てる
     if (attendeeDeletedPair instanceof PairAttendeeTooLessError) {
@@ -33,34 +42,35 @@ export class DeleteAttendeeService {
         onUnableAllocateAction() // 自動割合ができなかった場合のアラート
         return allocatedPair
       }
-
-      return Team.create({
-        name: this.team.name,
-        pairs: new PairCollection([
-          ...otherPairs.delete(allocatedPair),
-          allocatedPair,
-        ]),
-      })
+      const new_team = belong_team.replacePair(allocatedPair)
+      return this.allTeams.replaceTeam(new_team)
     }
     // 通常の処理
-    const new_pairs = new PairCollection([...otherPairs, attendeeDeletedPair])
-
-    return Team.create({
-      name: this.team.name,
-      pairs: new_pairs,
-    })
+    const new_team = belong_team.replacePair(attendeeDeletedPair)
+    return this.allTeams.replaceTeam(new_team)
   }
 
   private autoAlocateAttendee(
     attendee: Attendee,
   ): Pair | UnPemitedOperationError {
-    const pair = this.team.pairs.find((p) => p.attendees.has(attendee))
-    if (!pair) {
+    const belong_pair = this.allTeams.allPairs.find((p) =>
+      p.attendees.has(attendee),
+    )
+    if (!belong_pair) {
       return new UnPemitedOperationError(
         '該当の参加者のチーム内のペアへの所属が確認できませんでした。',
       )
     }
-    const otherPairs = this.team.pairs.delete(pair)
+
+    const belong_team = this.allTeams.find((team) =>
+      team.pairs.has(belong_pair),
+    )
+    if (!belong_team) {
+      return new UnPemitedOperationError(
+        '該当の参加者のチームが確認できませんでした。',
+      )
+    }
+    const otherPairs = belong_team.pairs.delete(belong_pair)
     if (otherPairs.length === 0) {
       return new UnPemitedOperationError(
         '他のペアが存在せず自動でペアを割り当てることができませんでした。',

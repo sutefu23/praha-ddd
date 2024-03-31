@@ -19,7 +19,7 @@ export interface CreateAttendeeAttachedTaskProps {
 }
 
 export class AttendeeAttachedTask extends BaseEntity<AttendeeAttachedTaskProps> {
-  public constructor(props: AttendeeAttachedTaskProps) {
+  private constructor(props: AttendeeAttachedTaskProps) {
     super(props)
   }
 

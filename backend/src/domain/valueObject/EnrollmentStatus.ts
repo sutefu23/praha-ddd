@@ -13,7 +13,7 @@ export class EnrollmentStatus extends ValueObject<StatusEnum> {
   private constructor(value: StatusEnum) {
     super(value)
   }
-  public static of(
+  public static new(
     value: StatusEnum,
   ): EnrollmentStatus | InvalidParameterError {
     if (!Object.values(StatusConst).includes(value)) {

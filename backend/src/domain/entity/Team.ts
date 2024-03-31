@@ -5,6 +5,7 @@ import { UUID } from '../valueObject/UUID'
 import { TeamName } from '../valueObject/TeamName'
 import { PairCollection } from './collection/PairCollection'
 import { AttendeeCollection } from './collection/AttendeeCollection'
+import { UnPemitedOperationError } from '../error/DomainError'
 
 // チーム
 export interface TeamProps extends EntityProps {
@@ -19,7 +20,7 @@ export interface CreateTeamProps {
 }
 
 export class Team extends BaseEntity<TeamProps> {
-  public constructor(props: TeamProps) {
+  private constructor(props: TeamProps) {
     super(props)
   }
 
@@ -57,7 +58,17 @@ export class Team extends BaseEntity<TeamProps> {
     })
   }
 
-  public static create(createProps: CreateTeamProps): Team | TeamTooLess {
+  replacePair(pair: Pair) {
+    const new_pairs = this.pairs.delete(pair).add(pair)
+    return new Team({
+      ...this.props,
+      pairs: new_pairs,
+    })
+  }
+
+  public static create(
+    createProps: CreateTeamProps,
+  ): Team | UnPemitedOperationError {
     const id = UUID.new()
     const props: TeamProps = {
       id,
@@ -67,8 +78,9 @@ export class Team extends BaseEntity<TeamProps> {
     const attendees = createProps.pairs.flatMap((pair) => pair.attendees)
 
     if (attendees.length < 3) {
-      console.warn('チームには最低3人以上いなければなりません。' + this.name)
-      return TeamTooLess.create(props)
+      return new UnPemitedOperationError(
+        'チームには最低3人以上いなければなりません',
+      )
     }
     return new Team(props)
   }
@@ -77,5 +89,3 @@ export class Team extends BaseEntity<TeamProps> {
     return new Team(regenProps)
   }
 }
-
-export class TeamTooLess extends Team {}

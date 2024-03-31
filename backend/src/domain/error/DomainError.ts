@@ -24,6 +24,13 @@ export class NoEffectiveOperationError extends DomainError {
   }
 }
 
+export class UnableToProgressError extends DomainError {
+  constructor(message: string) {
+    super(message)
+    this.name = 'UnableToProgressError'
+  }
+}
+
 export class RepositoryError extends DomainError {
   constructor(message: string) {
     super(message)

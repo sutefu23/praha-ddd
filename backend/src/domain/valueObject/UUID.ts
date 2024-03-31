@@ -9,7 +9,7 @@ export class UUID extends ValueObject<string> {
     const uuid = generateUUID()
     return new UUID(uuid)
   }
-  public static of(value: string): UUID | InvalidParameterError {
+  public static new(value: string): UUID | InvalidParameterError {
     if (!isValieUUID(value)) {
       return new InvalidParameterError('不正な値です')
     }

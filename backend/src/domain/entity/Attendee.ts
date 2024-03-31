@@ -57,7 +57,7 @@ export class Attendee extends BaseEntity<AttendeeProps> {
     createProps: CreateAttendeeProps,
   ): Attendee | InvalidParameterError {
     const id = UUID.new()
-    const enrollment_status = EnrollmentStatus.of(StatusConst.ENROLLMENT)
+    const enrollment_status = EnrollmentStatus.new(StatusConst.ENROLLMENT)
     if (enrollment_status instanceof InvalidParameterError) {
       return enrollment_status // as InvalidParameterError
     }

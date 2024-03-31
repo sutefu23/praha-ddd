@@ -54,7 +54,7 @@ export class PairAttendeeCollection extends AttendeeCollection {
 }
 
 export class Pair extends BaseEntity<PairProps> {
-  public constructor(props: PairProps) {
+  private constructor(props: PairProps) {
     super(props)
   }
 

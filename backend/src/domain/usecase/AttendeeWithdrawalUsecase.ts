@@ -14,7 +14,7 @@ import { IAttendeeQueryService } from '../interface/IAttendeeQueryService'
 import { ISendMailAction } from '../interface/ISendMailAction'
 import { IPairQueryService } from '../interface/IPairQueryService'
 import { ITeamQueryService } from '../interface/ITeamQueryService'
-import { DeleteAttendeeService } from '../service/DeleteAttendeeService'
+import { PrahaDeleteAttendeeService } from '../service/PrahaDeleteAttendeeService'
 
 export class AttendeeWithdrawalUsecase {
   constructor(
@@ -35,7 +35,7 @@ export class AttendeeWithdrawalUsecase {
     const attendee = await this.attendeeQueryService.findAttendeeById(
       targetAttendeeID,
     )
-    const enrollment_status = EnrollmentStatus.of(status)
+    const enrollment_status = EnrollmentStatus.new(status)
     if (enrollment_status instanceof InvalidParameterError) {
       return enrollment_status // as InvalidParameterError
     }
@@ -66,7 +66,11 @@ export class AttendeeWithdrawalUsecase {
       return new QueryNotFoundError('所属するペアが見つかりません。')
     }
 
-    const deleteService = new DeleteAttendeeService(team)
+    const allTeams = await this.teamQueryService.findAllTeams()
+    if (allTeams instanceof QueryError) {
+      return allTeams // as QueryError
+    }
+    const deleteService = new PrahaDeleteAttendeeService(allTeams)
     deleteService.deleteAttendee(
       attendee,
       () => {

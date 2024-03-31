@@ -12,17 +12,15 @@ import {
 } from '../valueObject/EnrollmentStatus'
 import { UUID } from '../valueObject/UUID'
 import { IAttendeeQueryService } from '../interface/IAttendeeQueryService'
-import { ISendMailAction } from '../interface/ISendMailAction'
 import { IPairQueryService } from '../interface/IPairQueryService'
 import { ITeamQueryService } from '../interface/ITeamQueryService'
-import { AddAttendeeService } from '../service/AddAttendeeService'
+import { PrahaAddAttendeeService } from '../service/PrahaAddAttendeeService'
 
 export class AttendeeRejoinUsecase {
   constructor(
     private readonly attendeeQueryService: IAttendeeQueryService,
     private readonly teamQueryService: ITeamQueryService,
     private readonly pairQueryService: IPairQueryService,
-    private readonly sendMailAction: ISendMailAction,
   ) {}
 
   async exec(
@@ -34,7 +32,7 @@ export class AttendeeRejoinUsecase {
     const attendee = await this.attendeeQueryService.findAttendeeById(
       targetAttendeeID,
     )
-    const enrollment_status = EnrollmentStatus.of(status)
+    const enrollment_status = EnrollmentStatus.new(status)
     if (enrollment_status instanceof InvalidParameterError) {
       return enrollment_status // as InvalidParameterError
     }
@@ -65,8 +63,12 @@ export class AttendeeRejoinUsecase {
       return new QueryNotFoundError('所属するペアが見つかりません。')
     }
 
-    const addService = new AddAttendeeService(team)
-    const new_team = addService.addAttendee(attendee, pair)
+    const allTeams = await this.teamQueryService.findAllTeams()
+    if (allTeams instanceof QueryError) {
+      return allTeams // as QueryError
+    }
+    const addService = new PrahaAddAttendeeService(allTeams)
+    const new_team = addService.addAttendee(attendee)
     if (new_team instanceof NoEffectiveOperationError) {
       return new_team // as NoEffectiveOperationError
     }

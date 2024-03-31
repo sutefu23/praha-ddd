@@ -7,7 +7,7 @@ export class BaseValueObject<T> {
   protected constructor(value: T) {
     this._value = Object.freeze(value)
   }
-  of(value: T): BaseValueObject<T> | Error {
+  new(value: T): BaseValueObject<T> | Error {
     return new BaseValueObject(value)
   }
 

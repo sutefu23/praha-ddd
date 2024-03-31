@@ -13,7 +13,7 @@ export class ProgressStatus extends ValueObject<StatusEnum> {
   private constructor(value: StatusEnum) {
     super(value)
   }
-  public static of(value: StatusEnum): ProgressStatus | InvalidParameterError {
+  public static new(value: StatusEnum): ProgressStatus | InvalidParameterError {
     if (!Object.values(StatusConst).includes(value)) {
       return new InvalidParameterError('不正な値です')
     }

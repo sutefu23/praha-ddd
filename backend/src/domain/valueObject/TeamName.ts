@@ -5,7 +5,7 @@ export class TeamName extends ValueObject<string> {
   private constructor(value: string) {
     super(value)
   }
-  public static of(value: string): TeamName | InvalidParameterError {
+  public static new(value: string): TeamName | InvalidParameterError {
     if (value.length <= 3) {
       return new InvalidParameterError(
         'チーム名は3文字以下でなければなりません',
