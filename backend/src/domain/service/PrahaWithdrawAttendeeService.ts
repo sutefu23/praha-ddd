@@ -1,9 +1,9 @@
 import { Attendee } from '../entity/Attendee'
+import { Pair } from '../entity/Pair'
 import {
-  Pair,
   PairAttendeeTooLessError,
   PairAttendeeTooManyError,
-} from '../entity/Pair'
+} from '../entity/collection/PairAttendeeCollection'
 import { TeamCollection } from '../entity/collection/TeamCollection'
 import { UnPemitedOperationError } from '../error/DomainError'
 

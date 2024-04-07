@@ -2,17 +2,24 @@ import { Attendee } from '../Attendee'
 import { ImmutableArray } from '../base/Array'
 
 export class AttendeeCollection extends ImmutableArray<Attendee> {
-  private attendees: Attendee[]
-  constructor(attendees: Attendee[]) {
+  protected attendees: Attendee[]
+  protected constructor(attendees: Attendee[]) {
     super()
     this.attendees = attendees
   }
+  static create(attendees: Attendee[]): AttendeeCollection | Error {
+    return new AttendeeCollection(attendees)
+  }
 
-  add(attendee: Attendee): AttendeeCollection {
+  static regen(attendees: Attendee[]): AttendeeCollection {
+    return new AttendeeCollection(attendees)
+  }
+
+  add(attendee: Attendee): AttendeeCollection | Error {
     return new AttendeeCollection([...this.attendees, attendee])
   }
 
-  delete(attendee: Attendee): AttendeeCollection {
+  delete(attendee: Attendee): AttendeeCollection | Error {
     const deletedAttendees = this.attendees.filter((a) => !a.equals(attendee))
     return new AttendeeCollection(deletedAttendees)
   }

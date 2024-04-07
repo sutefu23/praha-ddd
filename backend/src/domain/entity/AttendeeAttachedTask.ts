@@ -1,8 +1,9 @@
 import { BaseEntity, EntityProps } from 'src/domain/entity/base/Entity'
 import { Attendee } from './Attendee'
 import { Task } from './Task'
-import { TaskStatus } from '../valueObject/TaskStatus'
+import { TaskStatus, StatusConst } from '../valueObject/TaskStatus'
 import { UUID } from '../valueObject/UUID'
+import { InvalidParameterError } from '../error/DomainError'
 
 // 参加者所有課題
 export interface AttendeeAttachedTaskProps extends EntityProps {
@@ -15,7 +16,6 @@ export interface AttendeeAttachedTaskProps extends EntityProps {
 export interface CreateAttendeeAttachedTaskProps {
   readonly attendeeUUId: Attendee['id']
   readonly taskUUId: Task['id']
-  readonly status: TaskStatus
 }
 
 export class AttendeeAttachedTask extends BaseEntity<AttendeeAttachedTaskProps> {
@@ -36,9 +36,15 @@ export class AttendeeAttachedTask extends BaseEntity<AttendeeAttachedTaskProps> 
 
   public static create(
     createProps: CreateAttendeeAttachedTaskProps,
-  ): AttendeeAttachedTask {
+  ): AttendeeAttachedTask | InvalidParameterError {
+    const status = TaskStatus.new(StatusConst.NOT_STARTED)
+    if (status instanceof InvalidParameterError) {
+      return status
+    }
+
     const props: AttendeeAttachedTaskProps = {
       id: UUID.new(),
+      status: status,
       ...createProps,
     }
     return new AttendeeAttachedTask(props)

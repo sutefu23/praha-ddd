@@ -27,10 +27,12 @@ export class AttendeeCreateUsecase {
     if (hasAttendee !== null) {
       return new InvalidParameterError('同じメールの登録者が既に存在します。')
     }
+
     const attendee = Attendee.create(attendeeProps)
     if (attendee instanceof InvalidParameterError) {
       return attendee // as InvalidParameterError
     }
+
     const res = await this.attendeeRepository.save(attendee)
     if (res instanceof RepositoryError) {
       return res // as RepositoryError

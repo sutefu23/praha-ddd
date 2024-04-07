@@ -26,7 +26,7 @@ export class TeamCreateUsecase {
     }
 
     if (hasTeam !== null) {
-      return new InvalidParameterError('同じメールの登録者が既に存在します。')
+      return new InvalidParameterError('同じ名前のチームが既に存在します。')
     }
     const team = Team.create(teamProps)
     if (team instanceof UnPemitedOperationError) {

@@ -14,9 +14,9 @@ import { IAttendeeQueryService } from '../interface/IAttendeeQueryService'
 import { ISendMailAction } from '../interface/ISendMailAction'
 import { IPairQueryService } from '../interface/IPairQueryService'
 import { ITeamQueryService } from '../interface/ITeamQueryService'
-import { PrahaDeleteAttendeeService } from '../service/PrahaDeleteAttendeeService'
+import { PrahaDeleteAttendeeService } from '../service/PrahaWithdrawAttendeeService'
 
-export class AttendeeWithdrawalUsecase {
+export class AttendeeWithdrawUsecase {
   constructor(
     private readonly attendeeQueryService: IAttendeeQueryService,
     private readonly teamQueryService: ITeamQueryService,

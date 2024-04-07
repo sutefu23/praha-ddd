@@ -14,7 +14,7 @@ import { UUID } from '../valueObject/UUID'
 import { IAttendeeQueryService } from '../interface/IAttendeeQueryService'
 import { IPairQueryService } from '../interface/IPairQueryService'
 import { ITeamQueryService } from '../interface/ITeamQueryService'
-import { PrahaAddAttendeeService } from '../service/PrahaAddAttendeeService'
+import { PrahaRejoinAttendeeService } from '../service/PrahaRejoinAttendeeService'
 
 export class AttendeeRejoinUsecase {
   constructor(
@@ -67,7 +67,7 @@ export class AttendeeRejoinUsecase {
     if (allTeams instanceof QueryError) {
       return allTeams // as QueryError
     }
-    const addService = new PrahaAddAttendeeService(allTeams)
+    const addService = new PrahaRejoinAttendeeService(allTeams)
     const new_team = addService.addAttendee(attendee)
     if (new_team instanceof NoEffectiveOperationError) {
       return new_team // as NoEffectiveOperationError

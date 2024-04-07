@@ -3,7 +3,7 @@ import { ImmutableArray } from '../base/Array'
 import { PairCollection } from './PairCollection'
 
 export class TeamCollection extends ImmutableArray<Team> {
-  private teams: Team[]
+  protected teams: Team[]
   constructor(teams: Team[]) {
     super()
     this.teams = teams

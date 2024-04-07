@@ -38,7 +38,7 @@ export class Team extends BaseEntity<TeamProps> {
 
   getAllAttendees(): AttendeeCollection {
     const attendees = this.pairs.map((pair) => pair.attendees).flat()
-    return new AttendeeCollection(attendees)
+    return AttendeeCollection.regen(attendees)
   }
 
   addPair(pair: Pair) {

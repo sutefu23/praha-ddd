@@ -2,7 +2,7 @@ import { Task } from '../Task'
 import { ImmutableArray } from '../base/Array'
 
 export class TaskCollection extends ImmutableArray<Task> {
-  private tasks: Task[]
+  protected tasks: Task[]
   constructor(tasks: Task[]) {
     super()
     this.tasks = tasks

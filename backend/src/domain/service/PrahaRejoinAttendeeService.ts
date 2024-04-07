@@ -6,7 +6,7 @@ import {
 import { Pair, PairAttendeeTooManyError } from '../entity/Pair'
 import { TeamCollection } from '../entity/collection/TeamCollection'
 
-export class PrahaAddAttendeeService {
+export class PrahaRejoinAttendeeService {
   constructor(private allTeams: TeamCollection) {}
 
   addAttendee(attendee: Attendee) {
