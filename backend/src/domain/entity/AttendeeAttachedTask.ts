@@ -2,20 +2,20 @@ import { BaseEntity, EntityProps } from 'src/domain/entity/base/Entity'
 import { Attendee } from './Attendee'
 import { Task } from './Task'
 import { TaskStatus, StatusConst } from '../valueObject/TaskStatus'
-import { UUID } from '../valueObject/UUID'
 import { InvalidParameterError } from '../error/DomainError'
+import { UUID } from '../valueObject/UUID'
 
 // 参加者所有課題
 export interface AttendeeAttachedTaskProps extends EntityProps {
   readonly id: UUID
-  readonly attendeeUUId: Attendee['id']
-  readonly taskUUId: Task['id']
+  readonly attendee: Attendee
+  readonly task: Task
   readonly status: TaskStatus
 }
 
 export interface CreateAttendeeAttachedTaskProps {
-  readonly attendeeUUId: Attendee['id']
-  readonly taskUUId: Task['id']
+  readonly attendee: Attendee
+  readonly task: Task
 }
 
 export class AttendeeAttachedTask extends BaseEntity<AttendeeAttachedTaskProps> {
@@ -27,10 +27,26 @@ export class AttendeeAttachedTask extends BaseEntity<AttendeeAttachedTaskProps> 
     return this.props.id
   }
 
-  setContent(content: string) {
+  get attendee(): Attendee {
+    return this.props.attendee
+  }
+
+  get task(): Task {
+    return this.props.task
+  }
+
+  public modifyStatus(
+    newStatus: TaskStatus,
+  ): AttendeeAttachedTask | InvalidParameterError {
+    const oldStatus = this.props.status
+    if (oldStatus.value === StatusConst.COMPLETED) {
+      return new InvalidParameterError(
+        '完了済みの課題のステータスは変更できません',
+      )
+    }
     return new AttendeeAttachedTask({
       ...this.props,
-      content,
+      newStatus,
     })
   }
 

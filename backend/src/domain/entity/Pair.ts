@@ -74,3 +74,5 @@ export class Pair extends BaseEntity<PairProps> {
     return new Pair(regenProps)
   }
 }
+
+export { PairAttendeeTooManyError }
