@@ -18,4 +18,7 @@ export class TeamName extends ValueObject<string> {
 
     return new TeamName(value)
   }
+  public static restore(value: string): TeamName {
+    return new TeamName(value)
+  }
 }

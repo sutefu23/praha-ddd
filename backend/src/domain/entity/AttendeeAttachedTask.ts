@@ -35,6 +35,10 @@ export class AttendeeAttachedTask extends BaseEntity<AttendeeAttachedTaskProps> 
     return this.props.task
   }
 
+  get status(): TaskStatus {
+    return this.props.status
+  }
+
   public modifyStatus(
     newStatus: TaskStatus,
   ): AttendeeAttachedTask | InvalidParameterError {

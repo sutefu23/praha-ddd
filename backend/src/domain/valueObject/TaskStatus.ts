@@ -19,4 +19,13 @@ export class TaskStatus extends ValueObject<StatusEnum> {
     }
     return new TaskStatus(value)
   }
+  public static restore(value: string): TaskStatus {
+    Object.values(StatusConst).forEach((status) => {
+      if (status === value) {
+        return new TaskStatus(value as StatusEnum)
+      }
+    })
+    // 敢えてretunではなくスローしています。
+    throw new InvalidParameterError('不正な値です')
+  }
 }

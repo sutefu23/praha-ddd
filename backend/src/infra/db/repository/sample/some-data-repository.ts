@@ -2,7 +2,7 @@ import { PrismaClient } from '@prisma/client'
 import { ISomeDataRepository } from 'src/domain/some-data/some-data-repository'
 import { SomeData } from 'src/domain/some-data/some-data'
 
-export class SomeDataRepository implements ISomeDataRepository {
+export class SomeDataRepository implements ISomeDataRepository<ClientType = unknown> {
   private prismaClient: PrismaClient
   public constructor(prismaClient: PrismaClient) {
     this.prismaClient = prismaClient

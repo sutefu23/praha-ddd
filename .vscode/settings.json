@@ -2,5 +2,17 @@
   "typescript.tsdk": "./backend/node_modules/typescript/lib",
   "eslint.workingDirectories": [
     { "directory": "./backend", "changeProcessCWD": true }
+  ],
+  "sqltools.connections": [
+    {
+      "previewLimit": 50,
+      "server": "localhost",
+      "port": 5403,
+      "driver": "PostgreSQL",
+      "name": "localhost-prisma",
+      "database": "prisma",
+      "username": "root",
+      "password": "prisma2020"
+    }
   ]
 }

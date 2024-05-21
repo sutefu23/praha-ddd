@@ -2,9 +2,18 @@ import { Attendee } from '../entity/Attendee'
 import { QueryError } from '../error/DomainError'
 import { UUID } from '../valueObject/UUID'
 
-export interface IAttendeeQueryService {
-  findAttendeeById: (id: UUID) => Promise<Attendee | null | QueryError>
-  findAttendeeByEmail: (email: string) => Promise<Attendee | null | QueryError>
-  findAttendeesByTeamId: (teamId: string) => Promise<Attendee[] | QueryError>
-  findAllAttendees: () => Promise<Attendee[] | QueryError>
+export interface IAttendeeQueryService<ClientType = unknown> {
+  findAttendeeById: (
+    client: ClientType,
+    id: UUID,
+  ) => Promise<Attendee | null | QueryError>
+  findAttendeeByEmail: (
+    client: ClientType,
+    email: string,
+  ) => Promise<Attendee | null | QueryError>
+  findAttendeesByTeamId: (
+    client: ClientType,
+    teamId: string,
+  ) => Promise<Attendee[] | QueryError>
+  findAllAttendees: (client: ClientType) => Promise<Attendee[] | QueryError>
 }

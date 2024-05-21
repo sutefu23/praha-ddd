@@ -17,6 +17,9 @@ export class PairName extends ValueObject<string> {
     }
     return new PairName(value)
   }
+  public static restore(value: string): PairName {
+    return new PairName(value)
+  }
   // 任意のアルファベット1文字のペア名を自動生成
   public static autoGenarate(): PairName {
     const random = Math.floor(Math.random() * 26)

@@ -19,4 +19,13 @@ export class ProgressStatus extends ValueObject<StatusEnum> {
     }
     return new ProgressStatus(value)
   }
+  public static restore(value: string): ProgressStatus {
+    Object.values(StatusConst).forEach((status) => {
+      if (status === value) {
+        return new ProgressStatus(value as StatusEnum)
+      }
+    })
+    // 敢えてretunではなくスローしています。
+    throw new InvalidParameterError('不正な値です')
+  }
 }

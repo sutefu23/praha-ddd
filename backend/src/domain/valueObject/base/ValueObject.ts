@@ -15,6 +15,10 @@ export class BaseValueObject<T> {
     return this._value
   }
 
+  restore(value: T): BaseValueObject<T> {
+    return new BaseValueObject(value)
+  }
+
   equals(vo: BaseValueObject<T>): boolean {
     if (typeof vo !== typeof this) {
       return false

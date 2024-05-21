@@ -4,12 +4,62 @@ datasource db {
 }
 
 generator client {
-  previewFeatures = ["nativeTypes"]
+  previewFeatures = ["interactiveTransactions"]
   provider        = "prisma-client-js"
 }
 
-model SomeData {
-  id        String    @id
-  required Boolean
-  number   Int     @db.SmallInt
+model Attendee {
+  id                   String                 @id
+  name                 String
+  email                String                 @unique
+  status               String
+  PairAttendeeList     PairAttendeeList[]
+  AttendeeAttachedTask AttendeeAttachedTask[]
+}
+
+model Pair {
+  id               String             @id
+  name             String
+  PairAttendeeList PairAttendeeList[]
+  TeamPairList     TeamPairList[]
+}
+
+model PairAttendeeList {
+  attendeeId String
+  attendee   Attendee @relation(fields: [attendeeId], references: [id])
+  pair       Pair     @relation(fields: [pairId], references: [id])
+  pairId     String
+
+  @@id([attendeeId, pairId])
+}
+
+model Team {
+  id           String         @id
+  name         String
+  TeamPairList TeamPairList[]
+}
+
+model TeamPairList {
+  teamId String
+  team   Team   @relation(fields: [teamId], references: [id])
+  pair   Pair   @relation(fields: [pairId], references: [id])
+  pairId String
+
+  @@id([teamId, pairId])
+}
+
+model Task {
+  id                   String                 @id
+  taskNumber           Int
+  content              String
+  AttendeeAttachedTask AttendeeAttachedTask[]
+}
+
+model AttendeeAttachedTask {
+  id         String   @id
+  attendeeId String
+  attendee   Attendee @relation(fields: [attendeeId], references: [id])
+  taskId     String
+  task       Task     @relation(fields: [taskId], references: [id])
+  status     String
 }
