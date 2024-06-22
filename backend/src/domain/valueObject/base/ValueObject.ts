@@ -15,7 +15,7 @@ export class BaseValueObject<T> {
     return this._value
   }
 
-  restore(value: T): BaseValueObject<T> {
+  mustParse(value: T): BaseValueObject<T> {
     return new BaseValueObject(value)
   }
 

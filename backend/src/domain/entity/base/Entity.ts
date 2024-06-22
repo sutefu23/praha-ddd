@@ -2,7 +2,6 @@ import { UUID } from '../../valueObject/UUID'
 
 export type EntityProps = {
   readonly id: UUID
-  readonly [key: string]: unknown
 }
 export class BaseEntity<T extends EntityProps> {
   protected readonly props: T

@@ -12,7 +12,7 @@ import {
 export interface PairProps extends EntityProps {
   readonly id: UUID
   readonly name: PairName
-  readonly attendees: Attendee[]
+  readonly attendees: PairAttendeeCollection
 }
 
 export interface CreatePairProps {
@@ -59,12 +59,18 @@ export class Pair extends BaseEntity<PairProps> {
     })
   }
 
-  public static create(createProps: CreatePairProps): Pair {
+  public static create(
+    createProps: CreatePairProps,
+  ): Pair | PairAttendeeTooManyError {
     const id = UUID.new()
+    const attendees = PairAttendeeCollection.create(createProps.attendees)
+    if (attendees instanceof PairAttendeeTooManyError) {
+      return attendees // as PairAttendeeTooManyError
+    }
     const props: PairProps = {
       id,
       name: createProps.name,
-      attendees: createProps.attendees,
+      attendees: attendees,
     }
 
     return new Pair(props)

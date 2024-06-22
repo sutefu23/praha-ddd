@@ -104,9 +104,9 @@ export class AttendeeQueryService
 
 export function AttendeeModelToEntity(dbAttendee: AttendeeModel): Attendee {
   return Attendee.regen({
-    id: UUID.restore(dbAttendee.id),
+    id: UUID.mustParse(dbAttendee.id),
     name: dbAttendee.name,
     email: dbAttendee.email,
-    enrollment_status: EnrollmentStatus.restore(dbAttendee.status),
+    enrollment_status: EnrollmentStatus.mustParse(dbAttendee.status),
   })
 }

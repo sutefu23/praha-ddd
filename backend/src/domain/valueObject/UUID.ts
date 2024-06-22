@@ -15,7 +15,10 @@ export class UUID extends ValueObject<string> {
     }
     return new UUID(value)
   }
-  public static restore(value: string): UUID {
+  public static mustParse(value: string): UUID {
+    if (!isValieUUID(value)) {
+      throw new InvalidParameterError('不正な値です')
+    }
     return new UUID(value)
   }
   public toString(): string {

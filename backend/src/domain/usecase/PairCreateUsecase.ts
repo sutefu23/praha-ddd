@@ -13,6 +13,7 @@ import { IPairRepository } from '../interface/IPairRepository'
 
 export class PairCreateUsecase {
   constructor(
+    private readonly repositoryClient: unknown,
     private readonly pairRepository: IPairRepository,
     private readonly pairQueryService: IPairQueryService,
   ) {}
@@ -22,6 +23,7 @@ export class PairCreateUsecase {
     attendees: Attendee[],
   ): Promise<Pair | InvalidParameterError | RepositoryError> {
     const hasPair = await this.pairQueryService.findPairByName(
+      this.repositoryClient,
       pairProps.name.value,
     )
     if (hasPair instanceof QueryError) {
@@ -43,7 +45,7 @@ export class PairCreateUsecase {
     if (pair instanceof UnPemitedOperationError) {
       return pair // as UnPemitedOperationError
     }
-    const res = await this.pairRepository.save(pair)
+    const res = await this.pairRepository.save(this.repositoryClient, pair)
     if (res instanceof RepositoryError) {
       return res // as RepositoryError
     }

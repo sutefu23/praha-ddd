@@ -5,6 +5,7 @@ import {
 } from '../error/DomainError'
 import { Pair, PairAttendeeTooManyError } from '../entity/Pair'
 import { TeamCollection } from '../entity/collection/TeamCollection'
+import { AttendeeCollection } from '../entity/collection/AttendeeCollection'
 
 export class PrahaRejoinAttendeeService {
   constructor(private allTeams: TeamCollection) {}
@@ -53,11 +54,11 @@ export class PrahaRejoinAttendeeService {
     const moveCount = Math.floor(target_pair.attendees.length / 2)
     const moveAttendees = target_pair.attendees.slice(0, moveCount)
     const stayAttendees = target_pair.attendees.slice(moveCount)
-
+    const collection = AttendeeCollection.create(stayAttendees)
     const current_pair = Pair.regen({
       id: target_pair.id,
       name: target_pair.name,
-      attendees: stayAttendees,
+      attendees: collection,
     })
     const lastPairName = this.allTeams.allPairs.toSorted(
       (a, b) =>
@@ -73,6 +74,9 @@ export class PrahaRejoinAttendeeService {
       name: new_pair_name,
       attendees: moveAttendees,
     })
+    if (new_pair instanceof PairAttendeeTooManyError) {
+      throw new Error('new_pair is PairAttendeeTooManyError') // あり得ないため、敢えてスロー
+    }
     return [current_pair, new_pair]
   }
 }

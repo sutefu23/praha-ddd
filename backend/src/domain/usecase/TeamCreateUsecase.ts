@@ -11,6 +11,7 @@ import { ITeamRepository } from '../interface/ITeamRepository'
 
 export class TeamCreateUsecase {
   constructor(
+    private readonly repositoryClient: unknown,
     private readonly teamRepository: ITeamRepository,
     private readonly teamQueryService: ITeamQueryService,
   ) {}
@@ -19,6 +20,7 @@ export class TeamCreateUsecase {
     teamProps: CreateTeamProps,
   ): Promise<Team | InvalidParameterError | RepositoryError> {
     const hasTeam = await this.teamQueryService.findTeamByName(
+      this.repositoryClient,
       teamProps.name.value,
     )
     if (hasTeam instanceof QueryError) {
@@ -32,7 +34,7 @@ export class TeamCreateUsecase {
     if (team instanceof UnPemitedOperationError) {
       return team // as UnPemitedOperationError
     }
-    const res = await this.teamRepository.save(team)
+    const res = await this.teamRepository.save(this.repositoryClient, team)
     if (res instanceof RepositoryError) {
       return res // as RepositoryError
     }

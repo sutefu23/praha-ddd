@@ -10,14 +10,14 @@ export class PairName extends ValueObject<string> {
       return new InvalidParameterError('ペア名は1文字でなければなりません')
     }
 
-    if (!/^[a-Z]+$/.test(value)) {
+    if (!/^[a-zA-Z]+$/.test(value)) {
       return new InvalidParameterError(
         'ペア名はアルファベットでなければなりません',
       )
     }
     return new PairName(value)
   }
-  public static restore(value: string): PairName {
+  public static mustParse(value: string): PairName {
     return new PairName(value)
   }
   // 任意のアルファベット1文字のペア名を自動生成

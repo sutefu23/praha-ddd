@@ -50,17 +50,14 @@ export class AttendeeAttachedTask extends BaseEntity<AttendeeAttachedTaskProps> 
     }
     return new AttendeeAttachedTask({
       ...this.props,
-      newStatus,
+      status: newStatus,
     })
   }
 
   public static create(
     createProps: CreateAttendeeAttachedTaskProps,
-  ): AttendeeAttachedTask | InvalidParameterError {
-    const status = TaskStatus.new(StatusConst.NOT_STARTED)
-    if (status instanceof InvalidParameterError) {
-      return status
-    }
+  ): AttendeeAttachedTask {
+    const status = TaskStatus.mustParse(StatusConst.NOT_STARTED)
 
     const props: AttendeeAttachedTaskProps = {
       id: UUID.new(),

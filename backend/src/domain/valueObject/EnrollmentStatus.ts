@@ -21,12 +21,10 @@ export class EnrollmentStatus extends ValueObject<StatusEnum> {
     }
     return new EnrollmentStatus(value)
   }
-  public static restore(value: string): EnrollmentStatus {
-    Object.values(StatusConst).forEach((status) => {
-      if (status === value) {
-        return new EnrollmentStatus(value as StatusEnum)
-      }
-    })
+  public static mustParse(value: string): EnrollmentStatus {
+    if (Object.values(StatusConst).includes(value as StatusEnum)) {
+      return new EnrollmentStatus(value as StatusEnum)
+    }
     // 敢えてretunではなくスローしています。
     throw new InvalidParameterError('不正な値です')
   }

@@ -76,7 +76,7 @@ export class TaskQueryService implements ITaskQueryService<PrismaClientType> {
 
 export function TaskModelToEntity(taskModel: TaskModel): Task {
   return Task.regen({
-    id: UUID.restore(taskModel.id),
+    id: UUID.mustParse(taskModel.id),
     taskNumber: taskModel.taskNumber,
     content: taskModel.content,
   })

@@ -11,7 +11,7 @@ import { UnPemitedOperationError } from '../error/DomainError'
 export interface TeamProps extends EntityProps {
   readonly id: UUID
   readonly name: TeamName
-  readonly pairs: PairCollection
+  readonly pairs: Pair[]
 }
 
 export interface CreateTeamProps {
@@ -33,7 +33,7 @@ export class Team extends BaseEntity<TeamProps> {
   }
 
   get pairs(): PairCollection {
-    return PairCollection.create(this.props.pairs)
+    return new PairCollection(this.props.pairs)
   }
 
   getAllAttendees(): AttendeeCollection {
@@ -42,10 +42,12 @@ export class Team extends BaseEntity<TeamProps> {
   }
 
   addPair(pair: Pair) {
-    const new_pair = this.pairs.add(pair)
+    // ランタイムエラーが出る
+    const new_pairs = this.pairs.add(pair)
+
     return new Team({
       ...this.props,
-      pairs: new_pair,
+      pairs: new_pairs,
     })
   }
 
@@ -73,7 +75,7 @@ export class Team extends BaseEntity<TeamProps> {
     const props: TeamProps = {
       id,
       name: createProps.name,
-      pairs: PairCollection.create(createProps.pairs),
+      pairs: createProps.pairs,
     }
     const attendees = createProps.pairs.flatMap((pair) => pair.attendees)
 

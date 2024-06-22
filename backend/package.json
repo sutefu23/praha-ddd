@@ -24,7 +24,7 @@
     "migrate:dev:push": "dotenv -e .local.env -- prisma db push",
     "migrate:test": "dotenv -e .test.env -- prisma migrate reset --force --preview-feature",
     "migrate:prd": "prisma migrate deploy --preview-feature",
-    "test:unit": "dotenv -e .test.env -- jest",
+    "test:unit": "dotenv -e .test.env -- jest --silent=false",
     "test:integration": "yarn migrate:test && dotenv -e .test.env -- jest -c ./jest.integration.config.js --runInBand"
   },
   "dependencies": {

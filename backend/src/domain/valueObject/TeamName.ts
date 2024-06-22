@@ -6,7 +6,7 @@ export class TeamName extends ValueObject<string> {
     super(value)
   }
   public static new(value: string): TeamName | InvalidParameterError {
-    if (value.length <= 3) {
+    if (value.length > 3) {
       return new InvalidParameterError(
         'チーム名は3文字以下でなければなりません',
       )
@@ -18,7 +18,7 @@ export class TeamName extends ValueObject<string> {
 
     return new TeamName(value)
   }
-  public static restore(value: string): TeamName {
+  public static mustParse(value: string): TeamName {
     return new TeamName(value)
   }
 }

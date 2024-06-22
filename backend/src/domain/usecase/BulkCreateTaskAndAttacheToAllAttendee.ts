@@ -1,4 +1,3 @@
-import { Attendee } from '../entity/Attendee'
 import { Task } from '../entity/Task'
 import {
   InvalidParameterError,
@@ -12,11 +11,10 @@ import { IAttendeeQueryService } from '../interface/IAttendeeQueryService'
 import { AttendeeAttachedTask } from '../entity/AttendeeAttachedTask'
 import { IAttendeeAttachedTaskRepository } from '../interface/IAttendeeAttachedTaskRepository'
 import { ITaskRepository } from '../interface/ITaskRepository'
-import { IUnitOfWork } from '../interface/IUnitOfWork'
 
 export class BulkCreateTaskAndAttacheToAllAttendee {
   constructor(
-    private readonly unitOfWork: IUnitOfWork,
+    private readonly repositoryClient: unknown,
     private readonly taskQueryService: ITaskQueryService,
     private readonly taskRepository: ITaskRepository,
     private readonly attendeeQueryService: IAttendeeQueryService,
@@ -35,14 +33,16 @@ export class BulkCreateTaskAndAttacheToAllAttendee {
       if (task instanceof InvalidParameterError) {
         return task
       }
-      const res = await this.taskRepository.save(task)
+      const res = await this.taskRepository.save(this.repositoryClient, task)
       if (res instanceof RepositoryError) {
         return res
       }
       return task
     })
     const tasks = await Promise.all(taskPromises)
-    const attendees = await this.attendeeQueryService.findAllAttendees()
+    const attendees = await this.attendeeQueryService.findAllAttendees(
+      this.repositoryClient,
+    )
 
     if (attendees instanceof QueryError) {
       return attendees // as QueryError
@@ -65,6 +65,7 @@ export class BulkCreateTaskAndAttacheToAllAttendee {
           return newAttendeeAttachedTask
         }
         const res = await this.attendeeAttachedTaskRepository.save(
+          this.repositoryClient,
           newAttendeeAttachedTask,
         )
         if (res instanceof RepositoryError) {

@@ -10,6 +10,7 @@ import { IAttendeeRepository } from '../interface/IAttendeeRepository'
 
 export class AttendeeCreateUsecase {
   constructor(
+    private readonly repositoryClient: unknown,
     private readonly attendeeRepository: IAttendeeRepository,
     private readonly attendeeQueryService: IAttendeeQueryService,
   ) {}
@@ -18,6 +19,7 @@ export class AttendeeCreateUsecase {
     attendeeProps: CreateAttendeeProps,
   ): Promise<Attendee | InvalidParameterError | RepositoryError> {
     const hasAttendee = await this.attendeeQueryService.findAttendeeByEmail(
+      this.repositoryClient,
       attendeeProps.email,
     )
     if (hasAttendee instanceof QueryError) {
@@ -33,7 +35,10 @@ export class AttendeeCreateUsecase {
       return attendee // as InvalidParameterError
     }
 
-    const res = await this.attendeeRepository.save(attendee)
+    const res = await this.attendeeRepository.save(
+      this.repositoryClient,
+      attendee,
+    )
     if (res instanceof RepositoryError) {
       return res // as RepositoryError
     }

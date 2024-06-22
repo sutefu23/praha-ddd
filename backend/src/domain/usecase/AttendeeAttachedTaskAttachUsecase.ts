@@ -14,6 +14,7 @@ import { IAttendeeAttachedTaskRepository } from '../interface/IAttendeeAttachedT
 
 export class AttendeeAttachTaskUsecase {
   constructor(
+    private readonly repositoryClient: unknown,
     private readonly taskQueryService: ITaskQueryService,
     private readonly attendeeQueryService: IAttendeeQueryService,
     private readonly attendeeAttachedTaskRepository: IAttendeeAttachedTaskRepository,
@@ -29,7 +30,10 @@ export class AttendeeAttachTaskUsecase {
     | QueryError
     | RepositoryError
   > {
-    const task = await this.taskQueryService.findTaskById(targetTaskId)
+    const task = await this.taskQueryService.findTaskById(
+      this.repositoryClient,
+      targetTaskId,
+    )
     if (task instanceof QueryError) {
       return task // as QueryError
     }
@@ -39,6 +43,7 @@ export class AttendeeAttachTaskUsecase {
     }
 
     const attendee = await this.attendeeQueryService.findAttendeeById(
+      this.repositoryClient,
       targetAttendeeId,
     )
     if (attendee instanceof QueryError) {
@@ -59,6 +64,7 @@ export class AttendeeAttachTaskUsecase {
     }
 
     const res = await this.attendeeAttachedTaskRepository.save(
+      this.repositoryClient,
       newAttendeeAttachedTask,
     )
     if (res instanceof RepositoryError) {

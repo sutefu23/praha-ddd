@@ -144,8 +144,8 @@ export class PairQueryService implements IPairQueryService<PrismaClientType> {
 
 export function PairModelToEntity(pairModel: PairModelWithAttendee): Pair {
   return Pair.regen({
-    id: UUID.restore(pairModel.id),
-    name: PairName.restore(pairModel.name),
+    id: UUID.mustParse(pairModel.id),
+    name: PairName.mustParse(pairModel.name),
     attendees: pairModel.PairAttendeeList.map((attendeeList) => {
       return AttendeeModelToEntity(attendeeList.attendee)
     }),

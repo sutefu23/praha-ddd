@@ -2,7 +2,16 @@
 // 破壊操作を禁止した配列
 export class ImmutableArray<T> extends Array<T> {
   constructor(initialValues: T[] = []) {
-    super(...initialValues)
+    super()
+    if (initialValues.length > 0) {
+      // 手動で要素を追加
+      for (const value of initialValues) {
+        this.pushInternal(value)
+      }
+    }
+  }
+  private pushInternal(...items: T[]): number {
+    return super.push(...items)
   }
   public push(...items: T[]): number {
     throw new Error('Method is impermitted.')

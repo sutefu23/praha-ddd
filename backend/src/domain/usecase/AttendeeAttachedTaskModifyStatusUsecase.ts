@@ -14,6 +14,7 @@ import { TaskStatus } from '../valueObject/TaskStatus'
 
 export class AttendeeAttachTaskUsecase {
   constructor(
+    private readonly repositoryClient: unknown,
     private readonly attendeeAttachedTaskRepository: IAttendeeAttachedTaskRepository,
     private readonly attendeeAttachedTaskQueryService: IAttendeeAttachedTaskQueryService,
   ) {}
@@ -26,6 +27,7 @@ export class AttendeeAttachTaskUsecase {
     void | InvalidParameterError | QueryNotFoundError | UnPemitedOperationError
   > {
     const attendeeAttachedTask = await this.attendeeAttachedTaskQueryService.findByTaskAndAttendeeId(
+      this.repositoryClient,
       targetTaskId,
       authAttendeeId,
     )
@@ -47,6 +49,7 @@ export class AttendeeAttachTaskUsecase {
     }
 
     const res = await this.attendeeAttachedTaskRepository.save(
+      this.repositoryClient,
       newAttendeeAttachedTask,
     )
     if (res instanceof RepositoryError) {

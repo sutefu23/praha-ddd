@@ -2,31 +2,20 @@ import { AttendeeAttachedTask } from '@/domain/entity/AttendeeAttachedTask'
 import { QueryError } from '@/domain/error/DomainError'
 import { UUID } from '@/domain/valueObject/UUID'
 import { PrismaClientType } from './db'
-import type { AttendeeAttachedTask as AttendeeAttachedTaskModel } from '@prisma/client'
+import type {
+  AttendeeAttachedTask as AttendeeAttachedTaskModel,
+  Attendee as AttendeeModel,
+  Task as TaskModel,
+} from '@prisma/client'
 import { IAttendeeAttachedTaskQueryService } from '@/domain/interface/IAttendeeAttachedTaskQueryService'
 import { TaskStatus } from '@/domain/valueObject/TaskStatus'
-import { Attendee } from '@/domain/entity/Attendee'
 import { AttendeeModelToEntity } from './AttendeeQueryService'
 import { TaskModelToEntity } from './TaskQueryService'
 
 export type AttendeeAttachedTaskModelWithTaskAndAttendee = {
-  attendee: {
-    id: string
-    name: string
-    email: string
-    status: string
-  }
-  task: {
-    id: string
-    taskNumber: number
-    content: string
-  }
-} & {
-  id: string
-  attendeeId: string
-  taskId: string
-  status: string
-}
+  attendee: AttendeeModel
+  task: TaskModel
+} & AttendeeAttachedTaskModel
 
 export class AttendeeAttachedTaskQueryService
   implements IAttendeeAttachedTaskQueryService<PrismaClientType> {
@@ -65,9 +54,9 @@ export function AttendeeAttachedTaskModelToEntity(
   model: AttendeeAttachedTaskModelWithTaskAndAttendee,
 ): AttendeeAttachedTask {
   return AttendeeAttachedTask.regen({
-    id: UUID.restore(model.id),
+    id: UUID.mustParse(model.id),
     attendee: AttendeeModelToEntity(model.attendee),
     task: TaskModelToEntity(model.task),
-    status: TaskStatus.restore(model.status),
+    status: TaskStatus.mustParse(model.status),
   })
 }

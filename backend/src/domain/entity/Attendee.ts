@@ -1,6 +1,5 @@
 import { BaseEntity, EntityProps } from 'src/domain/entity/base/Entity'
 import { EnrollmentStatus, StatusConst } from '../valueObject/EnrollmentStatus'
-import { InvalidParameterError } from '../error/DomainError'
 import { UUID } from '../valueObject/UUID'
 // 参加者
 export interface AttendeeProps extends EntityProps {
@@ -53,14 +52,9 @@ export class Attendee extends BaseEntity<AttendeeProps> {
     })
   }
 
-  public static create(
-    createProps: CreateAttendeeProps,
-  ): Attendee | InvalidParameterError {
+  public static create(createProps: CreateAttendeeProps): Attendee {
     const id = UUID.new()
-    const enrollment_status = EnrollmentStatus.new(StatusConst.ENROLLMENT)
-    if (enrollment_status instanceof InvalidParameterError) {
-      return enrollment_status // as InvalidParameterError
-    }
+    const enrollment_status = EnrollmentStatus.mustParse(StatusConst.ENROLLMENT)
     const props: AttendeeProps = {
       id,
       name: createProps.name,

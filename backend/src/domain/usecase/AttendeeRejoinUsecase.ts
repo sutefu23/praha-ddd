@@ -18,6 +18,7 @@ import { PrahaRejoinAttendeeService } from '../service/PrahaRejoinAttendeeServic
 
 export class AttendeeRejoinUsecase {
   constructor(
+    private readonly repositoryClient: unknown,
     private readonly attendeeQueryService: IAttendeeQueryService,
     private readonly teamQueryService: ITeamQueryService,
     private readonly pairQueryService: IPairQueryService,
@@ -30,6 +31,7 @@ export class AttendeeRejoinUsecase {
     Attendee | InvalidParameterError | QueryError | QueryNotFoundError
   > {
     const attendee = await this.attendeeQueryService.findAttendeeById(
+      this.repositoryClient,
       targetAttendeeID,
     )
     const enrollment_status = EnrollmentStatus.new(status)
@@ -47,7 +49,10 @@ export class AttendeeRejoinUsecase {
 
     const modifiedAttendee = attendee.setEnrollmentStatus(enrollment_status)
 
-    const team = await this.teamQueryService.findTeamsByAttendeeId(attendee.id)
+    const team = await this.teamQueryService.findTeamsByAttendeeId(
+      this.repositoryClient,
+      attendee.id,
+    )
     if (team instanceof QueryError) {
       return team // as QueryError
     }
@@ -55,7 +60,10 @@ export class AttendeeRejoinUsecase {
       return new QueryNotFoundError('所属するチームが見つかりません。')
     }
 
-    const pair = await this.pairQueryService.findPairByAttendeeId(attendee.id)
+    const pair = await this.pairQueryService.findPairByAttendeeId(
+      this.repositoryClient,
+      attendee.id,
+    )
     if (pair instanceof QueryError) {
       return pair // as QueryError
     }
@@ -63,7 +71,9 @@ export class AttendeeRejoinUsecase {
       return new QueryNotFoundError('所属するペアが見つかりません。')
     }
 
-    const allTeams = await this.teamQueryService.findAllTeams()
+    const allTeams = await this.teamQueryService.findAllTeams(
+      this.repositoryClient,
+    )
     if (allTeams instanceof QueryError) {
       return allTeams // as QueryError
     }

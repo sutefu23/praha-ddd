@@ -179,8 +179,8 @@ function TeamModelToEntity(teamModel: TeamModelWithPair): Team {
     return PairModelToEntity(teamPair.pair)
   })
   return Team.regen({
-    id: UUID.restore(teamModel.id),
-    name: TeamName.restore(teamModel.name),
+    id: UUID.mustParse(teamModel.id),
+    name: TeamName.mustParse(teamModel.name),
     pairs: teamPairList,
   })
 }

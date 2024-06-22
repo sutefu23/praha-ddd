@@ -18,6 +18,8 @@ import { PrahaDeleteAttendeeService } from '../service/PrahaWithdrawAttendeeServ
 
 export class AttendeeWithdrawUsecase {
   constructor(
+    private readonly repositoryClient: unknown,
+    private readonly mailClient: unknown,
     private readonly attendeeQueryService: IAttendeeQueryService,
     private readonly teamQueryService: ITeamQueryService,
     private readonly pairQueryService: IPairQueryService,
@@ -33,6 +35,7 @@ export class AttendeeWithdrawUsecase {
     Attendee | InvalidParameterError | QueryError | QueryNotFoundError
   > {
     const attendee = await this.attendeeQueryService.findAttendeeById(
+      this.repositoryClient,
       targetAttendeeID,
     )
     const enrollment_status = EnrollmentStatus.new(status)
@@ -50,7 +53,11 @@ export class AttendeeWithdrawUsecase {
 
     const modifiedAttendee = attendee.setEnrollmentStatus(enrollment_status)
 
-    const team = await this.teamQueryService.findTeamsByAttendeeId(attendee.id)
+    const team = await this.teamQueryService.findTeamsByAttendeeId(
+      this.repositoryClient,
+
+      attendee.id,
+    )
     if (team instanceof QueryError) {
       return team // as QueryError
     }
@@ -58,7 +65,11 @@ export class AttendeeWithdrawUsecase {
       return new QueryNotFoundError('所属するチームが見つかりません。')
     }
 
-    const pair = await this.pairQueryService.findPairByAttendeeId(attendee.id)
+    const pair = await this.pairQueryService.findPairByAttendeeId(
+      this.repositoryClient,
+
+      attendee.id,
+    )
     if (pair instanceof QueryError) {
       return pair // as QueryError
     }
@@ -66,7 +77,9 @@ export class AttendeeWithdrawUsecase {
       return new QueryNotFoundError('所属するペアが見つかりません。')
     }
 
-    const allTeams = await this.teamQueryService.findAllTeams()
+    const allTeams = await this.teamQueryService.findAllTeams(
+      this.repositoryClient,
+    )
     if (allTeams instanceof QueryError) {
       return allTeams // as QueryError
     }
@@ -75,6 +88,7 @@ export class AttendeeWithdrawUsecase {
       attendee,
       () => {
         const mailRes = this.sendMailAction.sendToAdmin(
+          this.mailClient,
           `${modifiedAttendee.name}さんがペアを辞めました。`,
           `${modifiedAttendee.name}さんの在籍ステータスが${
             modifiedAttendee.enrollment_status
@@ -95,6 +109,7 @@ export class AttendeeWithdrawUsecase {
       },
       () => {
         const mailRes = this.sendMailAction.sendToAdmin(
+          this.mailClient,
           `ペア${pair}の自動割当が出来ません。`,
           `${modifiedAttendee.name}さんの在籍ステータスが${
             modifiedAttendee.enrollment_status
