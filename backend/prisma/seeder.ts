@@ -1,3 +1,4 @@
+import { Attendee } from '@/domain/entity/Attendee'
 import { PrismaClient } from '@prisma/client'
 const prisma = new PrismaClient()
 

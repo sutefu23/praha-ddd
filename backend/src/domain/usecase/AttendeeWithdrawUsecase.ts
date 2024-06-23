@@ -4,6 +4,7 @@ import {
   InvalidParameterError,
   QueryError,
   QueryNotFoundError,
+  RepositoryError,
 } from '../error/DomainError'
 import {
   StatusConst as EnrollmentConst,
@@ -15,6 +16,7 @@ import { ISendMailAction } from '../interface/ISendMailAction'
 import { IPairQueryService } from '../interface/IPairQueryService'
 import { ITeamQueryService } from '../interface/ITeamQueryService'
 import { PrahaDeleteAttendeeService } from '../service/PrahaWithdrawAttendeeService'
+import { IAttendeeRepository } from '../interface/IAttendeeRepository'
 
 export class AttendeeWithdrawUsecase {
   constructor(
@@ -24,6 +26,7 @@ export class AttendeeWithdrawUsecase {
     private readonly teamQueryService: ITeamQueryService,
     private readonly pairQueryService: IPairQueryService,
     private readonly sendMailAction: ISendMailAction,
+    private readonly attendeeRepository: IAttendeeRepository,
   ) {}
 
   async exec(
@@ -128,7 +131,13 @@ export class AttendeeWithdrawUsecase {
         }
       },
     )
-
+    const res = await this.attendeeRepository.save(
+      this.repositoryClient,
+      modifiedAttendee,
+    )
+    if (res instanceof RepositoryError) {
+      return res
+    }
     return modifiedAttendee
   }
 }

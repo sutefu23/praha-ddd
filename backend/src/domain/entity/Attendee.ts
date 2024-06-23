@@ -45,10 +45,10 @@ export class Attendee extends BaseEntity<AttendeeProps> {
       name,
     })
   }
-  setEnrollmentStatus(enrollment_status: EnrollmentStatus) {
+  setEnrollmentStatus(new_enrollment_status: EnrollmentStatus) {
     return new Attendee({
       ...this.props,
-      enrollment_status,
+      enrollment_status: new_enrollment_status,
     })
   }
 

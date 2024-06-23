@@ -21,6 +21,13 @@ export class EnrollmentStatus extends ValueObject<StatusEnum> {
     }
     return new EnrollmentStatus(value)
   }
+  public static parse(value: string): EnrollmentStatus | InvalidParameterError {
+    if (Object.values(StatusConst).includes(value as StatusEnum)) {
+      return new EnrollmentStatus(value as StatusEnum)
+    }
+    return new InvalidParameterError('不正な値です')
+  }
+
   public static mustParse(value: string): EnrollmentStatus {
     if (Object.values(StatusConst).includes(value as StatusEnum)) {
       return new EnrollmentStatus(value as StatusEnum)

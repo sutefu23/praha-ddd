@@ -11,6 +11,7 @@ import { IPairQueryService } from '@/domain/interface/IPairQueryService'
 import { PairCollection } from '@/domain/entity/collection/PairCollection'
 import { PairName } from '@/domain/valueObject/PairName'
 import { AttendeeModelToEntity } from './AttendeeQueryService'
+import { AttendeeCollection } from '@/domain/entity/collection/AttendeeCollection'
 
 export type PairModelWithAttendee = {
   PairAttendeeList: ({
@@ -121,6 +122,31 @@ export class PairQueryService implements IPairQueryService<PrismaClientType> {
     }
     return null
   }
+  public async findPairsByPairIds(
+    client: PrismaClientType,
+    pairIds: UUID[],
+  ): Promise<Pair[] | QueryError> {
+    try {
+      const pairModels = await client.pair.findMany({
+        where: {
+          id: {
+            in: pairIds.map((id) => id.toString()),
+          },
+        },
+        include: {
+          PairAttendeeList: {
+            include: { attendee: true },
+          },
+        },
+      })
+      return pairModels.map(PairModelToEntity)
+    } catch (e) {
+      if (e instanceof Error) {
+        return new QueryError(e.message)
+      }
+    }
+    return new QueryError('Failed to fetch pairs')
+  }
   public async findAllPairs(
     client: PrismaClientType,
   ): Promise<QueryError | PairCollection> {
@@ -132,7 +158,7 @@ export class PairQueryService implements IPairQueryService<PrismaClientType> {
           },
         },
       })
-      return new PairCollection(pairModels.map(PairModelToEntity))
+      return PairCollection.create(pairModels.map(PairModelToEntity))
     } catch (e) {
       if (e instanceof Error) {
         return new QueryError(e.message)
@@ -143,11 +169,13 @@ export class PairQueryService implements IPairQueryService<PrismaClientType> {
 }
 
 export function PairModelToEntity(pairModel: PairModelWithAttendee): Pair {
+  const attendees = pairModel.PairAttendeeList.map((attendeeList) => {
+    return AttendeeModelToEntity(attendeeList.attendee)
+  })
+
   return Pair.regen({
     id: UUID.mustParse(pairModel.id),
     name: PairName.mustParse(pairModel.name),
-    attendees: pairModel.PairAttendeeList.map((attendeeList) => {
-      return AttendeeModelToEntity(attendeeList.attendee)
-    }),
+    attendees: AttendeeCollection.create(attendees),
   })
 }

@@ -19,6 +19,12 @@ export class TaskStatus extends ValueObject<StatusEnum> {
     }
     return new TaskStatus(value)
   }
+  public static parse(value: string): TaskStatus | InvalidParameterError {
+    if (Object.values(StatusConst).includes(value as StatusEnum)) {
+      return new TaskStatus(value as StatusEnum)
+    }
+    return new InvalidParameterError('不正な値です')
+  }
   public static mustParse(value: string): TaskStatus {
     if (Object.values(StatusConst).includes(value as StatusEnum)) {
       return new TaskStatus(value as StatusEnum)

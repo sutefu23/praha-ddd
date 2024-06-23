@@ -22,6 +22,22 @@ describe('EnrollmentStatus', () => {
       expect(status.name).toBe(InvalidParameterError.name)
     })
   })
+  describe('parse', () => {
+    it('should return EnrollmentStatus instance', () => {
+      const status = EnrollmentStatus.parse(EnrollmentStatusConst.ENROLLMENT)
+      expect(status).toBeInstanceOf(EnrollmentStatus)
+      expect((status as EnrollmentStatus).value).toBe(
+        EnrollmentStatusConst.ENROLLMENT,
+      )
+    })
+    it('should return InvalidParameterError when invalid value is passed', () => {
+      const status = EnrollmentStatus.parse(
+        'invalid' as EnrollmentStatusEnum,
+      ) as InvalidParameterError
+      expect(status).toBeInstanceOf(Error)
+      expect(status.name).toBe(InvalidParameterError.name)
+    })
+  })
   describe('mustParse', () => {
     it('should return EnrollmentStatus instance', () => {
       const status = EnrollmentStatus.mustParse(

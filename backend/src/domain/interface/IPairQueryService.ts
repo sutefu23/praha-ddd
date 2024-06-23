@@ -16,5 +16,9 @@ export interface IPairQueryService<ClientType = unknown> {
     client: ClientType,
     attendeeId: UUID,
   ) => Promise<Pair | null | QueryError>
+  findPairsByPairIds: (
+    client: ClientType,
+    pairIds: UUID[],
+  ) => Promise<Pair[] | QueryError>
   findAllPairs: (client: ClientType) => Promise<PairCollection | QueryError>
 }

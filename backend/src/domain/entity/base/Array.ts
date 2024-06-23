@@ -13,6 +13,9 @@ export class ImmutableArray<T> extends Array<T> {
   private pushInternal(...items: T[]): number {
     return super.push(...items)
   }
+  public has(item: T): boolean {
+    return this.some((i) => i === item)
+  }
   public push(...items: T[]): number {
     throw new Error('Method is impermitted.')
   }

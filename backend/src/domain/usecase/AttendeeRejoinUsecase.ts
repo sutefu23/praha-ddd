@@ -4,6 +4,7 @@ import {
   NoEffectiveOperationError,
   QueryError,
   QueryNotFoundError,
+  RepositoryError,
   UnPemitedOperationError,
 } from '../error/DomainError'
 import {
@@ -15,6 +16,7 @@ import { IAttendeeQueryService } from '../interface/IAttendeeQueryService'
 import { IPairQueryService } from '../interface/IPairQueryService'
 import { ITeamQueryService } from '../interface/ITeamQueryService'
 import { PrahaRejoinAttendeeService } from '../service/PrahaRejoinAttendeeService'
+import { IAttendeeRepository } from '../interface/IAttendeeRepository'
 
 export class AttendeeRejoinUsecase {
   constructor(
@@ -22,13 +24,18 @@ export class AttendeeRejoinUsecase {
     private readonly attendeeQueryService: IAttendeeQueryService,
     private readonly teamQueryService: ITeamQueryService,
     private readonly pairQueryService: IPairQueryService,
+    private readonly attendeeRepository: IAttendeeRepository,
   ) {}
 
   async exec(
     targetAttendeeID: UUID,
     status: typeof EnrollmentConst.ENROLLMENT,
   ): Promise<
-    Attendee | InvalidParameterError | QueryError | QueryNotFoundError
+    | Attendee
+    | InvalidParameterError
+    | QueryError
+    | QueryNotFoundError
+    | RepositoryError
   > {
     const attendee = await this.attendeeQueryService.findAttendeeById(
       this.repositoryClient,
@@ -86,7 +93,13 @@ export class AttendeeRejoinUsecase {
     if (new_team instanceof UnPemitedOperationError) {
       return new_team // as UnPemitedOperationError
     }
-
+    const res = await this.attendeeRepository.save(
+      this.repositoryClient,
+      modifiedAttendee,
+    )
+    if (res instanceof RepositoryError) {
+      return res
+    }
     return modifiedAttendee
   }
 }

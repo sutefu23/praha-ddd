@@ -16,4 +16,8 @@ export interface IAttendeeQueryService<ClientType = unknown> {
     teamId: string,
   ) => Promise<Attendee[] | QueryError>
   findAllAttendees: (client: ClientType) => Promise<Attendee[] | QueryError>
+  findAttendeesByIds: (
+    client: ClientType,
+    ids: UUID[],
+  ) => Promise<Attendee[] | QueryError>
 }

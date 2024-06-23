@@ -11,6 +11,7 @@ import { IAttendeeAttachedTaskQueryService } from '@/domain/interface/IAttendeeA
 import { TaskStatus } from '@/domain/valueObject/TaskStatus'
 import { AttendeeModelToEntity } from './AttendeeQueryService'
 import { TaskModelToEntity } from './TaskQueryService'
+import { PageResponse } from '@/domain/interface/PageResponse'
 
 export type AttendeeAttachedTaskModelWithTaskAndAttendee = {
   attendee: AttendeeModel
@@ -41,6 +42,50 @@ export class AttendeeAttachedTaskQueryService
         return null
       }
       return AttendeeAttachedTaskModelToEntity(attendeeAttachedTaskModel)
+    } catch (e) {
+      if (e instanceof Error) {
+        return new QueryError(e.message)
+      }
+    }
+    return null
+  }
+  public async findByTaskStatus(
+    client: PrismaClientType,
+    TaskStatus: TaskStatus,
+    PageQuery: { page: number; perPage: number },
+  ): Promise<
+    | QueryError
+    | null
+    | { data: AttendeeAttachedTask[]; pageResponse: PageResponse }
+  > {
+    try {
+      const [attendeeAttachedTaskModels, total] = await Promise.all([
+        client.attendeeAttachedTask.findMany({
+          where: {
+            status: TaskStatus.toString(),
+          },
+          include: {
+            task: true,
+            attendee: true,
+          },
+          skip: PageQuery.page * PageQuery.perPage,
+          take: PageQuery.perPage,
+        }),
+        client.attendeeAttachedTask.count({
+          where: {
+            status: TaskStatus.toString(),
+          },
+        }),
+      ])
+      return {
+        data: attendeeAttachedTaskModels.map(AttendeeAttachedTaskModelToEntity),
+        pageResponse: {
+          currentPage: PageQuery.page,
+          allDataCount: total,
+          allPageCount: Math.ceil(total / PageQuery.perPage),
+          perPage: PageQuery.perPage,
+        },
+      }
     } catch (e) {
       if (e instanceof Error) {
         return new QueryError(e.message)

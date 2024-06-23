@@ -12,7 +12,7 @@ import { IAttendeeQueryService } from '../interface/IAttendeeQueryService'
 import { AttendeeAttachedTask } from '../entity/AttendeeAttachedTask'
 import { IAttendeeAttachedTaskRepository } from '../interface/IAttendeeAttachedTaskRepository'
 
-export class AttendeeAttachTaskUsecase {
+export class AttendeeAttachedTaskAttachCreateUsecase {
   constructor(
     private readonly repositoryClient: unknown,
     private readonly taskQueryService: ITaskQueryService,

@@ -12,6 +12,7 @@ describe('Attendee', () => {
       email: 'tanaka@example.com',
     })
     expect(attendee).toBeInstanceOf(Attendee)
+    expect(attendee.enrollment_status).toBe(EnrollmentStatusConst.ENROLLMENT)
   })
   it('should return new Attendee instance', () => {
     const attendee = Attendee.regen({
@@ -23,5 +24,23 @@ describe('Attendee', () => {
       ),
     })
     expect(attendee).toBeInstanceOf(Attendee)
+  })
+  it('should update name', () => {
+    const attendee = Attendee.create({
+      name: '田中太郎',
+      email: 'tanaka@example.com',
+    })
+    const newAttendee = attendee.setName('田中花子')
+    expect(newAttendee.name).toBe('田中花子')
+  })
+  it('should update enrollment status', () => {
+    const attendee = Attendee.create({
+      name: '田中太郎',
+      email: 'tanaka@example.com',
+    })
+    const newAttendee = attendee.setEnrollmentStatus(
+      EnrollmentStatus.mustParse(EnrollmentStatusConst.WITHDRAWAL),
+    )
+    expect(newAttendee.enrollment_status).toBe(EnrollmentStatusConst.WITHDRAWAL)
   })
 })

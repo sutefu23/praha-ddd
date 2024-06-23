@@ -100,6 +100,32 @@ export class AttendeeQueryService
     }
     return []
   }
+  public async findAttendeesByIds(
+    client: PrismaClientType,
+    ids: UUID[],
+  ): Promise<QueryError | Attendee[]> {
+    try {
+      const attendeeModel = await client.attendee.findMany({
+        where: {
+          id: {
+            in: ids.map((id) => id.toString()),
+          },
+        },
+        include: {
+          PairAttendeeList: true,
+          AttendeeAttachedTask: true,
+        },
+      })
+      return attendeeModel.map((dbAttendee) =>
+        AttendeeModelToEntity(dbAttendee),
+      )
+    } catch (e) {
+      if (e instanceof Error) {
+        return new QueryError(e.message)
+      }
+    }
+    return []
+  }
 }
 
 export function AttendeeModelToEntity(dbAttendee: AttendeeModel): Attendee {

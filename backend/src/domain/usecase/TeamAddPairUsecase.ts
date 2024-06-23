@@ -4,15 +4,12 @@ import {
   InvalidParameterError,
   QueryError,
   RepositoryError,
-  UnPemitedOperationError,
 } from '../error/DomainError'
 import { IPairQueryService } from '../interface/IPairQueryService'
-
 import { ITeamQueryService } from '../interface/ITeamQueryService'
 import { ITeamRepository } from '../interface/ITeamRepository'
-import { TeamName } from '../valueObject/TeamName'
 
-export class TeamCreateUsecase {
+export class TeamAddPairUsecase {
   constructor(
     private readonly repositoryClient: unknown,
     private readonly teamRepository: ITeamRepository,
@@ -21,40 +18,40 @@ export class TeamCreateUsecase {
   ) {}
 
   async exec(
-    name: TeamName,
-    pairIds: Pair['id'][],
+    teamId: Team['id'],
+    pairId: Pair['id'],
   ): Promise<Team | InvalidParameterError | RepositoryError> {
-    const hasTeam = await this.teamQueryService.findTeamByName(
+    const team = await this.teamQueryService.findTeamById(
       this.repositoryClient,
-      name.value,
+      teamId,
     )
-    if (hasTeam instanceof QueryError) {
-      return hasTeam // as QueryError
+    if (team instanceof QueryError) {
+      return team // as QueryError
     }
 
-    if (hasTeam !== null) {
-      return new InvalidParameterError('同じ名前のチームが既に存在します。')
+    if (team === null) {
+      return new InvalidParameterError('指定されたチームは存在しません。')
     }
 
-    const pairs = await this.pairQueryService.findPairsByPairIds(
+    const pair = await this.pairQueryService.findPairById(
       this.repositoryClient,
-      pairIds,
+      pairId,
     )
-    if (pairs instanceof QueryError) {
-      return pairs // as QueryError
+
+    if (pair instanceof QueryError) {
+      return pair // as QueryError
     }
 
-    const team = Team.create({
-      name,
-      pairs,
-    })
-    if (team instanceof UnPemitedOperationError) {
-      return team // as UnPemitedOperationError
+    if (pair === null) {
+      return new InvalidParameterError('指定されたペアは存在しません。')
     }
-    const res = await this.teamRepository.save(this.repositoryClient, team)
+
+    const newTeam = team.addPair(pair)
+
+    const res = await this.teamRepository.save(this.repositoryClient, newTeam)
     if (res instanceof RepositoryError) {
       return res // as RepositoryError
     }
-    return team
+    return newTeam
   }
 }

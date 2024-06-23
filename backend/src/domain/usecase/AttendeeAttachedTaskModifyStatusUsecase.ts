@@ -12,7 +12,7 @@ import { IAttendeeAttachedTaskQueryService } from '../interface/IAttendeeAttache
 import { IAttendeeAttachedTaskRepository } from '../interface/IAttendeeAttachedTaskRepository'
 import { TaskStatus } from '../valueObject/TaskStatus'
 
-export class AttendeeAttachTaskUsecase {
+export class AttendeeAttachedTaskModifyStatusUsecase {
   constructor(
     private readonly repositoryClient: unknown,
     private readonly attendeeAttachedTaskRepository: IAttendeeAttachedTaskRepository,
@@ -20,9 +20,9 @@ export class AttendeeAttachTaskUsecase {
   ) {}
 
   async exec(
+    authAttendeeId: Attendee['id'],
     targetTaskId: Task['id'],
     newStatus: TaskStatus,
-    authAttendeeId: Attendee['id'],
   ): Promise<
     void | InvalidParameterError | QueryNotFoundError | UnPemitedOperationError
   > {
