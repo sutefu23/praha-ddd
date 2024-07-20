@@ -1,3 +1,4 @@
+import { InvalidParameterError } from '../error/DomainError'
 import {
   EnrollmentStatus,
   StatusConst as EnrollmentStatusConst,
@@ -10,9 +11,11 @@ describe('Attendee', () => {
     const attendee = Attendee.create({
       name: '田中太郎',
       email: 'tanaka@example.com',
-    })
+    }) as Attendee
     expect(attendee).toBeInstanceOf(Attendee)
-    expect(attendee.enrollment_status).toBe(EnrollmentStatusConst.ENROLLMENT)
+    expect(attendee.enrollment_status.value).toBe(
+      EnrollmentStatusConst.ENROLLMENT,
+    )
   })
   it('should return new Attendee instance', () => {
     const attendee = Attendee.regen({
@@ -29,7 +32,7 @@ describe('Attendee', () => {
     const attendee = Attendee.create({
       name: '田中太郎',
       email: 'tanaka@example.com',
-    })
+    }) as Attendee
     const newAttendee = attendee.setName('田中花子')
     expect(newAttendee.name).toBe('田中花子')
   })
@@ -37,10 +40,28 @@ describe('Attendee', () => {
     const attendee = Attendee.create({
       name: '田中太郎',
       email: 'tanaka@example.com',
-    })
+    }) as Attendee
     const newAttendee = attendee.setEnrollmentStatus(
       EnrollmentStatus.mustParse(EnrollmentStatusConst.WITHDRAWAL),
     )
-    expect(newAttendee.enrollment_status).toBe(EnrollmentStatusConst.WITHDRAWAL)
+    expect(newAttendee.enrollment_status.value).toBe(
+      EnrollmentStatusConst.WITHDRAWAL,
+    )
+  })
+
+  it('should return InvalidParameterError', () => {
+    const attendee = Attendee.create({
+      name: '',
+      email: 'test@test.com',
+    }) as Attendee
+    expect(attendee).toBeInstanceOf(InvalidParameterError)
+  })
+
+  it('should return InvalidParameterError', () => {
+    const attendee = Attendee.create({
+      name: 'test',
+      email: 'test',
+    }) as Attendee
+    expect(attendee).toBeInstanceOf(InvalidParameterError)
   })
 })

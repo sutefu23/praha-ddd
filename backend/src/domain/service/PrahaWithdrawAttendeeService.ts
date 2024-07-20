@@ -7,7 +7,7 @@ import {
 import { TeamCollection } from '../entity/collection/TeamCollection'
 import { UnPemitedOperationError } from '../error/DomainError'
 
-export class PrahaDeleteAttendeeService {
+export class PrahaWithdrawAttendeeService {
   constructor(private allTeams: TeamCollection) {}
 
   deleteAttendee(

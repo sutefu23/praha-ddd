@@ -21,7 +21,7 @@ export class AttendeeAttachedTaskAttachCreateUsecase {
   ) {}
 
   async exec(
-    targetTaskId: Task['id'],
+    targetTaskNumber: Task['taskNumber'],
     targetAttendeeId: Attendee['id'],
   ): Promise<
     | void
@@ -30,9 +30,9 @@ export class AttendeeAttachedTaskAttachCreateUsecase {
     | QueryError
     | RepositoryError
   > {
-    const task = await this.taskQueryService.findTaskById(
+    const task = await this.taskQueryService.findTaskByTaskNumber(
       this.repositoryClient,
-      targetTaskId,
+      targetTaskNumber,
     )
     if (task instanceof QueryError) {
       return task // as QueryError

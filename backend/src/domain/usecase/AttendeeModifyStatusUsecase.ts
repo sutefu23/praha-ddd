@@ -4,6 +4,7 @@ import {
   NoEffectiveOperationError,
   QueryError,
   QueryNotFoundError,
+  RepositoryError,
 } from '../error/DomainError'
 
 import { IAttendeeQueryService } from '../interface/IAttendeeQueryService'
@@ -48,13 +49,8 @@ export class AttendeeModifyStatusUsecase {
     if (attendee === null) {
       return new QueryNotFoundError('指定された参加者が存在しません')
     }
-
     const oldStatus = attendee.enrollment_status
-    if (oldStatus.equals(newStatus)) {
-      return new NoEffectiveOperationError(
-        '元のステータスと変更ステータスに違いがありません',
-      )
-    }
+
     if (oldStatus.value === EnrollmentStatusConst.WITHDRAWAL) {
       return new InvalidParameterError(
         '退会済みの参加者のステータス変更はできません',
@@ -100,7 +96,7 @@ export class AttendeeModifyStatusUsecase {
       this.repositoryClient,
       modifiedAttendee,
     )
-    if (res instanceof QueryError) {
+    if (res instanceof RepositoryError) {
       return res
     }
     return attendee

@@ -30,14 +30,15 @@ export class TaskCreateUsecase {
     if (hasTask !== null) {
       return new InvalidParameterError('同じタスク番号の課題が既に存在します。')
     }
+
     const task = Task.create(taskProps)
-    if (task instanceof UnPemitedOperationError) {
-      return task // as UnPemitedOperationError
-    }
+
     const res = await this.taskRepository.save(this.repositoryClient, task)
+
     if (res instanceof RepositoryError) {
       return res // as RepositoryError
     }
+
     return task
   }
 }

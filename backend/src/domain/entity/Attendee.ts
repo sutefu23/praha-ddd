@@ -1,6 +1,7 @@
 import { BaseEntity, EntityProps } from 'src/domain/entity/base/Entity'
 import { EnrollmentStatus, StatusConst } from '../valueObject/EnrollmentStatus'
 import { UUID } from '../valueObject/UUID'
+import { InvalidParameterError } from '../error/DomainError'
 // 参加者
 export interface AttendeeProps extends EntityProps {
   readonly id: UUID
@@ -52,9 +53,22 @@ export class Attendee extends BaseEntity<AttendeeProps> {
     })
   }
 
-  public static create(createProps: CreateAttendeeProps): Attendee {
+  public static create(
+    createProps: CreateAttendeeProps,
+  ): Attendee | InvalidParameterError {
     const id = UUID.new()
     const enrollment_status = EnrollmentStatus.mustParse(StatusConst.ENROLLMENT)
+    const name = createProps.name
+    if (name.length === 0) {
+      return new InvalidParameterError('名前が入力されていません')
+    }
+    if (
+      new RegExp(
+        /^[A-Za-z0-9]{1}[A-Za-z0-9_.-]*@{1}[A-Za-z0-9_.-]{1,}\.[A-Za-z0-9]{1,}$/,
+      ).test(createProps.email) === false
+    ) {
+      return new InvalidParameterError('メールアドレスが不正です')
+    }
     const props: AttendeeProps = {
       id,
       name: createProps.name,

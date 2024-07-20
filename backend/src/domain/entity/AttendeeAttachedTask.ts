@@ -42,12 +42,20 @@ export class AttendeeAttachedTask extends BaseEntity<AttendeeAttachedTaskProps> 
   public modifyStatus(
     newStatus: TaskStatus,
   ): AttendeeAttachedTask | InvalidParameterError {
+    const res = TaskStatus.parse(newStatus.value)
+    if (res instanceof InvalidParameterError) {
+      return res // as InvalidParameterError
+    }
     const oldStatus = this.props.status
     if (oldStatus.value === StatusConst.COMPLETED) {
       return new InvalidParameterError(
         '完了済みの課題のステータスは変更できません',
       )
     }
+    if (newStatus.equals(oldStatus)) {
+      return new InvalidParameterError('ステータスに変更がありません')
+    }
+
     return new AttendeeAttachedTask({
       ...this.props,
       status: newStatus,

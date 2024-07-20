@@ -1,6 +1,9 @@
 import { Attendee } from '../entity/Attendee'
 import { Pair } from '../entity/Pair'
-import { PairAttendeeCollection } from '../entity/collection/PairAttendeeCollection'
+import {
+  PairAttendeeCollection,
+  PairAttendeeTooManyError,
+} from '../entity/collection/PairAttendeeCollection'
 import {
   InvalidParameterError,
   QueryError,
@@ -46,12 +49,12 @@ export class PairCreateUsecase {
       return attendees // as QueryError
     }
 
-    attendees.forEach((attendee) => {
+    for (const attendee of attendees) {
       const pairAttendeeCollection = PairAttendeeCollection.create([attendee])
-      if (pairAttendeeCollection instanceof UnPemitedOperationError) {
-        return pairAttendeeCollection // as UnPemitedOperationError
+      if (pairAttendeeCollection instanceof PairAttendeeTooManyError) {
+        return pairAttendeeCollection // as PairAttendeeTooManyError
       }
-    })
+    }
 
     const pair = Pair.create({ name: pairName, attendees })
     if (pair instanceof UnPemitedOperationError) {

@@ -26,6 +26,37 @@ describe('AttendeeAttachedTask', () => {
     )
     expect(modifiedAttendeeAttachedTask).toBeInstanceOf(AttendeeAttachedTask)
   })
+  it('ステータスが不正な値を指定するとエラーが返る', () => {
+    const attendee = AttendeeMockData1
+    const task = TaskMockData1
+    const attendeeAttachedTask = AttendeeAttachedTask.create({
+      attendee,
+      task,
+    })
+    const invalidStatus = ('INVALID_STATUS' as unknown) as TaskStatus
+    const modifiedAttendeeAttachedTask = attendeeAttachedTask.modifyStatus(
+      invalidStatus,
+    )
+    expect((modifiedAttendeeAttachedTask as InvalidParameterError).name).toBe(
+      InvalidParameterError.name,
+    )
+  })
+  it('ステータスに変更がない場合はエラーが返る', () => {
+    const attendee = AttendeeMockData1
+    const task = TaskMockData1
+    const attendeeAttachedTask = AttendeeAttachedTask.create({
+      attendee,
+      task,
+    })
+    const newStatus = TaskStatus.mustParse(StatusConst.NOT_STARTED)
+    const modifiedAttendeeAttachedTask = attendeeAttachedTask.modifyStatus(
+      newStatus,
+    )
+    expect(modifiedAttendeeAttachedTask).toBeInstanceOf(Error)
+    expect((modifiedAttendeeAttachedTask as InvalidParameterError).name).toBe(
+      InvalidParameterError.name,
+    )
+  })
   it('完了済みの課題のステータスを変更しようとするとエラーが返る', () => {
     const attendee = AttendeeMockData1
     const task = TaskMockData1

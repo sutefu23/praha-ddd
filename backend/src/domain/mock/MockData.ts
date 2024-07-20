@@ -14,6 +14,7 @@ import {
 } from '../valueObject/EnrollmentStatus'
 
 import { AttendeeCollection } from '../entity/collection/AttendeeCollection'
+import { AttendeeAttachedTask } from '../entity/AttendeeAttachedTask'
 
 export const EnrollmentStatusEnrollment = EnrollmentStatus.mustParse(
   EnrollmentStatusConst.ENROLLMENT,
@@ -41,6 +42,12 @@ export const AttendeeMockData3 = Attendee.regen({
   id: UUID.new(),
   name: '安田文子',
   email: 'test3@example.com',
+  enrollment_status: EnrollmentStatusEnrollment,
+})
+export const AttendeeMockData4 = Attendee.regen({
+  id: UUID.new(),
+  name: '阿部こうじ',
+  email: 'test4@example.com',
   enrollment_status: EnrollmentStatusEnrollment,
 })
 export const AttendeeCollectionMockData = AttendeeCollection.regen([
@@ -116,3 +123,16 @@ export const TeamCollectionMockData = TeamCollection.create([
   TeamMockDataB,
   TeamMockDataC,
 ])
+
+export const AttendeeAttachedTaskMockData1 = AttendeeAttachedTask.create({
+  attendee: AttendeeMockData1,
+  task: TaskMockData1,
+})
+export const AttendeeAttachedTaskMockData2 = AttendeeAttachedTask.create({
+  attendee: AttendeeMockData2,
+  task: TaskMockData2,
+})
+export const AttendeeAttachedTaskMockData3 = AttendeeAttachedTask.create({
+  attendee: AttendeeMockData3,
+  task: TaskMockData3,
+})

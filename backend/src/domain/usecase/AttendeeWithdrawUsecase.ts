@@ -15,7 +15,7 @@ import { IAttendeeQueryService } from '../interface/IAttendeeQueryService'
 import { ISendMailAction } from '../interface/ISendMailAction'
 import { IPairQueryService } from '../interface/IPairQueryService'
 import { ITeamQueryService } from '../interface/ITeamQueryService'
-import { PrahaDeleteAttendeeService } from '../service/PrahaWithdrawAttendeeService'
+import { PrahaWithdrawAttendeeService } from '../service/PrahaWithdrawAttendeeService'
 import { IAttendeeRepository } from '../interface/IAttendeeRepository'
 
 export class AttendeeWithdrawUsecase {
@@ -86,7 +86,7 @@ export class AttendeeWithdrawUsecase {
     if (allTeams instanceof QueryError) {
       return allTeams // as QueryError
     }
-    const deleteService = new PrahaDeleteAttendeeService(allTeams)
+    const deleteService = new PrahaWithdrawAttendeeService(allTeams)
     deleteService.deleteAttendee(
       attendee,
       () => {
@@ -94,10 +94,10 @@ export class AttendeeWithdrawUsecase {
           this.mailClient,
           `${modifiedAttendee.name}さんがペアを辞めました。`,
           `${modifiedAttendee.name}さんの在籍ステータスが${
-            modifiedAttendee.enrollment_status
+            modifiedAttendee.enrollment_status.value
           }となりました。
-        それにより所属チーム${team.name}が2名以下になりました。
-        現在の${team.name}参加者:\n
+        それにより所属チーム${team.name.value}が2名以下になりました。
+        現在の${team.name.value}参加者:\n
          ${team
            .getAllAttendees()
            .map((a) => a.name)
@@ -113,13 +113,15 @@ export class AttendeeWithdrawUsecase {
       () => {
         const mailRes = this.sendMailAction.sendToAdmin(
           this.mailClient,
-          `ペア${pair}の自動割当が出来ません。`,
+          `ペア${pair.name.value}の自動割当が出来ません。`,
           `${modifiedAttendee.name}さんの在籍ステータスが${
-            modifiedAttendee.enrollment_status
+            modifiedAttendee.enrollment_status.value
           }となりました。
-          \nペア${pair}を辞めたことで自動で残りのメンバーの割当を行いましたが、
+          \nペア${
+            pair.name.value
+          }を辞めたことで自動で残りのメンバーの割当を行いましたが、
           チーム内に合流可能なペアがありません。
-          現在のペア${pair.name}の参加者:\n
+          現在のペア${pair.name.value}の参加者:\n
            ${pair.attendees.map((a) => a.name).join(', ')}\n
           手動で割り当ててください。`,
         )
