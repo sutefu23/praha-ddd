@@ -20,25 +20,21 @@ import { Task, CreateTaskProps } from '../entity/Task'
 
 describe('TaskCreateUsecase', () => {
   const successUsecase = new TaskCreateUsecase(
-    repositoryClientMock,
     taskRepositoryMockSuccess,
     taskQueryServiceMockNotFound,
   )
 
   const hasSameTaskUsecase = new TaskCreateUsecase(
-    repositoryClientMock,
     taskRepositoryMockSuccess,
     taskQueryServiceMockSuccess,
   )
 
   const queryErrorUsecase = new TaskCreateUsecase(
-    repositoryClientMock,
     taskRepositoryMockSuccess,
     taskQueryServiceMockError,
   )
 
   const repositoryErrorUsecase = new TaskCreateUsecase(
-    repositoryClientMock,
     taskRepositoryMockError,
     taskQueryServiceMockNotFound,
   )

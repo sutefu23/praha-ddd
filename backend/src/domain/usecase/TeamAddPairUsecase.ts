@@ -11,7 +11,6 @@ import { ITeamRepository } from '../interface/ITeamRepository'
 
 export class TeamAddPairUsecase {
   constructor(
-    private readonly repositoryClient: unknown,
     private readonly teamRepository: ITeamRepository,
     private readonly teamQueryService: ITeamQueryService,
     private readonly pairQueryService: IPairQueryService,
@@ -21,10 +20,7 @@ export class TeamAddPairUsecase {
     teamId: Team['id'],
     pairId: Pair['id'],
   ): Promise<Team | InvalidParameterError | RepositoryError> {
-    const team = await this.teamQueryService.findTeamById(
-      this.repositoryClient,
-      teamId,
-    )
+    const team = await this.teamQueryService.findTeamById(teamId)
     if (team instanceof QueryError) {
       return team // as QueryError
     }
@@ -33,10 +29,7 @@ export class TeamAddPairUsecase {
       return new InvalidParameterError('指定されたチームは存在しません。')
     }
 
-    const pair = await this.pairQueryService.findPairById(
-      this.repositoryClient,
-      pairId,
-    )
+    const pair = await this.pairQueryService.findPairById(pairId)
 
     if (pair instanceof QueryError) {
       return pair // as QueryError
@@ -48,7 +41,7 @@ export class TeamAddPairUsecase {
 
     const newTeam = team.addPair(pair)
 
-    const res = await this.teamRepository.save(this.repositoryClient, newTeam)
+    const res = await this.teamRepository.save(newTeam)
     if (res instanceof RepositoryError) {
       return res // as RepositoryError
     }

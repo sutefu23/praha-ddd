@@ -1,5 +1,3 @@
-import { repositoryClientMock } from '../mock/MockDBClient'
-import { mailClientMock } from '../mock/MockMailClient'
 import { AttendeeModifyStatusUsecase } from './AttendeeModifyStatusUsecase'
 
 import {
@@ -32,8 +30,6 @@ import { Attendee } from '../entity/Attendee'
 
 describe('AttendeeModifyStatusUsecase', () => {
   const allSuccessUsecase = new AttendeeModifyStatusUsecase(
-    repositoryClientMock,
-    mailClientMock,
     attendeeQueryServiceMockSuccess,
     teamQueryServiceMockSuccess,
     pairQueryServiceMockSuccess,
@@ -42,8 +38,6 @@ describe('AttendeeModifyStatusUsecase', () => {
   )
 
   const attendeeQueryErrorUsecase = new AttendeeModifyStatusUsecase(
-    repositoryClientMock,
-    mailClientMock,
     attendeeQueryServiceMockError,
     teamQueryServiceMockSuccess,
     pairQueryServiceMockSuccess,
@@ -52,8 +46,6 @@ describe('AttendeeModifyStatusUsecase', () => {
   )
 
   const attendeeQueryNotFoundUsecase = new AttendeeModifyStatusUsecase(
-    repositoryClientMock,
-    mailClientMock,
     attendeeQueryServiceMockNotFound,
     teamQueryServiceMockSuccess,
     pairQueryServiceMockSuccess,
@@ -62,8 +54,6 @@ describe('AttendeeModifyStatusUsecase', () => {
   )
 
   const attendeeRepositoryErrorUsecase = new AttendeeModifyStatusUsecase(
-    repositoryClientMock,
-    mailClientMock,
     attendeeQueryServiceMockSuccess,
     teamQueryServiceMockSuccess,
     pairQueryServiceMockSuccess,

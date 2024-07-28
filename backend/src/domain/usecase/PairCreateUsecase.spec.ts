@@ -27,35 +27,30 @@ import {
 
 describe('PairCreateUsecase', () => {
   const allSuccessUsecase = new PairCreateUsecase(
-    repositoryClientMock,
     pairRepositoryMockSuccess,
     pairQueryServiceMockNotFound,
     attendeeQueryServiceMockSuccess,
   )
 
   const samePairAlreadyExistUsecase = new PairCreateUsecase(
-    repositoryClientMock,
     pairRepositoryMockSuccess,
     pairQueryServiceMockSuccess,
     attendeeQueryServiceMockSuccess,
   )
 
   const pairQueryErrorUsecase = new PairCreateUsecase(
-    repositoryClientMock,
     pairRepositoryMockSuccess,
     pairQueryServiceMockError,
     attendeeQueryServiceMockSuccess,
   )
 
   const attendeeQueryErrorUsecase = new PairCreateUsecase(
-    repositoryClientMock,
     pairRepositoryMockSuccess,
     pairQueryServiceMockNotFound,
     attendeeQueryServiceMockError,
   )
 
   const pairRepositoryErrorUsecase = new PairCreateUsecase(
-    repositoryClientMock,
     pairRepositoryMockError,
     pairQueryServiceMockNotFound,
     attendeeQueryServiceMockSuccess,

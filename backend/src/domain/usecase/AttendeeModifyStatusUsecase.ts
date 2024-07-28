@@ -19,8 +19,6 @@ import { AttendeeWithdrawUsecase } from './AttendeeWithdrawUsecase'
 
 export class AttendeeModifyStatusUsecase {
   constructor(
-    private readonly repositoryClient: unknown,
-    private readonly mailClient: unknown,
     private readonly attendeeQueryService: IAttendeeQueryService,
     private readonly teamQueryService: ITeamQueryService,
     private readonly pairQueryService: IPairQueryService,
@@ -38,10 +36,7 @@ export class AttendeeModifyStatusUsecase {
     | QueryNotFoundError
     | NoEffectiveOperationError
   > {
-    const attendee = await this.attendeeQueryService.findAttendeeById(
-      this.repositoryClient,
-      id,
-    )
+    const attendee = await this.attendeeQueryService.findAttendeeById(id)
     if (attendee instanceof QueryError) {
       return attendee // as QueryError
     }
@@ -63,8 +58,6 @@ export class AttendeeModifyStatusUsecase {
       newStatus.value === EnrollmentStatusConst.TEMPORARY_ABSENCE
     ) {
       const withdrowUsecase = new AttendeeWithdrawUsecase(
-        this.repositoryClient,
-        this.mailClient,
         this.attendeeQueryService,
         this.teamQueryService,
         this.pairQueryService,
@@ -81,7 +74,6 @@ export class AttendeeModifyStatusUsecase {
       newStatus.value === EnrollmentStatusConst.ENROLLMENT
     ) {
       const rejoinUsecase = new AttendeeRejoinUsecase(
-        this.repositoryClient,
         this.attendeeQueryService,
         this.teamQueryService,
         this.pairQueryService,
@@ -92,10 +84,7 @@ export class AttendeeModifyStatusUsecase {
     }
 
     const modifiedAttendee = attendee.setEnrollmentStatus(newStatus)
-    const res = await this.attendeeRepository.save(
-      this.repositoryClient,
-      modifiedAttendee,
-    )
+    const res = await this.attendeeRepository.save(modifiedAttendee)
     if (res instanceof RepositoryError) {
       return res
     }

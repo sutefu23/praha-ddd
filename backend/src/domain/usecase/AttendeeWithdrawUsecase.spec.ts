@@ -1,5 +1,3 @@
-import { repositoryClientMock } from '../mock/MockDBClient'
-import { mailClientMock } from '../mock/MockMailClient'
 import { AttendeeWithdrawUsecase } from './AttendeeWithdrawUsecase'
 import {
   attendeeQueryServiceMockSuccess,
@@ -16,10 +14,7 @@ import {
   attendeeRepositoryMockSuccess,
   attendeeRepositoryMockError,
 } from '../mock/MockRepository'
-import {
-  sendMailActionMockSuccess,
-  sendMailActionMockError,
-} from '../mock/MockSendMailAction'
+import { sendMailActionMockSuccess } from '../mock/MockSendMailAction'
 import { AttendeeMockData1 } from '../mock/MockData'
 import {
   QueryError,
@@ -32,8 +27,6 @@ import { PrahaWithdrawAttendeeService } from '../service/PrahaWithdrawAttendeeSe
 
 describe('AttendeeWithdrawUsecase', () => {
   const allSuccessUsecase = new AttendeeWithdrawUsecase(
-    repositoryClientMock,
-    mailClientMock,
     attendeeQueryServiceMockSuccess,
     teamQueryServiceMockSuccess,
     pairQueryServiceMockSuccess,
@@ -42,8 +35,6 @@ describe('AttendeeWithdrawUsecase', () => {
   )
 
   const attendeeQueryErrorUsecase = new AttendeeWithdrawUsecase(
-    repositoryClientMock,
-    mailClientMock,
     attendeeQueryServiceMockError,
     teamQueryServiceMockSuccess,
     pairQueryServiceMockSuccess,
@@ -52,8 +43,6 @@ describe('AttendeeWithdrawUsecase', () => {
   )
 
   const attendeeNotFoundUsecase = new AttendeeWithdrawUsecase(
-    repositoryClientMock,
-    mailClientMock,
     attendeeQueryServiceMockNotFound,
     teamQueryServiceMockSuccess,
     pairQueryServiceMockSuccess,
@@ -62,8 +51,6 @@ describe('AttendeeWithdrawUsecase', () => {
   )
 
   const teamQueryErrorUsecase = new AttendeeWithdrawUsecase(
-    repositoryClientMock,
-    mailClientMock,
     attendeeQueryServiceMockSuccess,
     teamQueryServiceMockError,
     pairQueryServiceMockSuccess,
@@ -72,8 +59,6 @@ describe('AttendeeWithdrawUsecase', () => {
   )
 
   const teamNotFoundUsecase = new AttendeeWithdrawUsecase(
-    repositoryClientMock,
-    mailClientMock,
     attendeeQueryServiceMockSuccess,
     teamQueryServiceMockNotFound,
     pairQueryServiceMockSuccess,
@@ -82,8 +67,6 @@ describe('AttendeeWithdrawUsecase', () => {
   )
 
   const pairQueryErrorUsecase = new AttendeeWithdrawUsecase(
-    repositoryClientMock,
-    mailClientMock,
     attendeeQueryServiceMockSuccess,
     teamQueryServiceMockSuccess,
     pairQueryServiceMockError,
@@ -92,8 +75,6 @@ describe('AttendeeWithdrawUsecase', () => {
   )
 
   const pairNotFoundUsecase = new AttendeeWithdrawUsecase(
-    repositoryClientMock,
-    mailClientMock,
     attendeeQueryServiceMockSuccess,
     teamQueryServiceMockSuccess,
     pairQueryServiceMockNotFound,
@@ -101,19 +82,16 @@ describe('AttendeeWithdrawUsecase', () => {
     attendeeRepositoryMockSuccess,
   )
 
-  const sendMailErrorUsecase = new AttendeeWithdrawUsecase(
-    repositoryClientMock,
-    mailClientMock,
-    attendeeQueryServiceMockSuccess,
-    teamQueryServiceMockSuccess,
-    pairQueryServiceMockSuccess,
-    sendMailActionMockError,
-    attendeeRepositoryMockSuccess,
-  )
+  // const sendMailErrorUsecase = new AttendeeWithdrawUsecase(
+  //   mailClientMock,
+  //   attendeeQueryServiceMockSuccess,
+  //   teamQueryServiceMockSuccess,
+  //   pairQueryServiceMockSuccess,
+  //   sendMailActionMockError,
+  //   attendeeRepositoryMockSuccess,
+  // )
 
   const repositoryErrorUsecase = new AttendeeWithdrawUsecase(
-    repositoryClientMock,
-    mailClientMock,
     attendeeQueryServiceMockSuccess,
     teamQueryServiceMockSuccess,
     pairQueryServiceMockSuccess,
@@ -212,7 +190,6 @@ describe('AttendeeWithdrawUsecase', () => {
       // テストコールバック1
       callback1()
       expect(sendMailActionMockSuccess.sendToAdmin).toHaveBeenCalledWith(
-        mailClientMock,
         expect.stringContaining('さんがペアを辞めました。'),
         expect.stringContaining('在籍ステータス'),
       )
@@ -220,7 +197,6 @@ describe('AttendeeWithdrawUsecase', () => {
       // // テストコールバック2
       callback2()
       expect(sendMailActionMockSuccess.sendToAdmin).toHaveBeenCalledWith(
-        mailClientMock,
         expect.stringContaining('自動割当が出来ません。'),
         expect.stringContaining('手動で割り当ててください。'),
       )

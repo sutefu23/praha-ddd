@@ -11,7 +11,6 @@ import {
   PairMockData2,
   TeamCollectionMockData,
   TeamMockDataA,
-  TeamMockDataB,
 } from '../mock/MockData'
 
 describe('PrahaWithdrawAttendeeService', () => {

@@ -3,14 +3,11 @@ import { IAttendeeRepository } from '@/domain/interface/IAttendeeRepository'
 import { RepositoryError } from '@/domain/error/DomainError'
 import { UUID } from '@/domain/valueObject/UUID'
 import type { PrismaClientType } from './db'
-export class AttendeeRepository
-  implements IAttendeeRepository<PrismaClientType> {
-  public async save(
-    client: PrismaClientType,
-    attendee: Attendee,
-  ): Promise<void | RepositoryError> {
+export class AttendeeRepository implements IAttendeeRepository {
+  constructor(public readonly client: PrismaClientType) {}
+  public async save(attendee: Attendee): Promise<void | RepositoryError> {
     try {
-      await client.attendee.upsert({
+      await this.client.attendee.upsert({
         where: { id: attendee.id.toString() },
         update: { name: attendee.name },
         create: {
@@ -26,12 +23,9 @@ export class AttendeeRepository
       }
     }
   }
-  public async delete(
-    client: PrismaClientType,
-    id: UUID,
-  ): Promise<void | RepositoryError> {
+  public async delete(id: UUID): Promise<void | RepositoryError> {
     try {
-      await client.attendee.delete({ where: { id: id.toString() } })
+      await this.client.attendee.delete({ where: { id: id.toString() } })
     } catch (e) {
       if (e instanceof Error) {
         return new RepositoryError(e.message)

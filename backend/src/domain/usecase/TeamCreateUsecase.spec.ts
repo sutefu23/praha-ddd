@@ -22,28 +22,24 @@ import { TeamName } from '../valueObject/TeamName'
 
 describe('TeamCreateUsecase', () => {
   const allSuccessUsecase = new TeamCreateUsecase(
-    repositoryClientMock,
     teamRepositoryMockSuccess,
     teamQueryServiceMockSuccess,
     pairQueryServiceMockSuccess,
   )
 
   const teamQueryErrorUsecase = new TeamCreateUsecase(
-    repositoryClientMock,
     teamRepositoryMockSuccess,
     teamQueryServiceMockError,
     pairQueryServiceMockSuccess,
   )
 
   const pairQueryErrorUsecase = new TeamCreateUsecase(
-    repositoryClientMock,
     teamRepositoryMockSuccess,
     teamQueryServiceMockSuccess,
     pairQueryServiceMockError,
   )
 
   const teamRepositoryErrorUsecase = new TeamCreateUsecase(
-    repositoryClientMock,
     teamRepositoryMockError,
     teamQueryServiceMockSuccess,
     pairQueryServiceMockSuccess,

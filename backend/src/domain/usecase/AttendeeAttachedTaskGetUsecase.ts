@@ -13,7 +13,6 @@ import { TaskStatus } from '../valueObject/TaskStatus'
 
 export class AttendeeAttachedTaskGetUsecase {
   constructor(
-    private readonly repositoryClient: unknown,
     private readonly attendeeAttachedTaskQueryService: IAttendeeAttachedTaskQueryService,
   ) {}
 
@@ -27,7 +26,6 @@ export class AttendeeAttachedTaskGetUsecase {
     | UnPemitedOperationError
   > {
     const res = await this.attendeeAttachedTaskQueryService.findByTaskStatus(
-      this.repositoryClient,
       taskStatus,
       pageQuery,
     )

@@ -6,14 +6,13 @@ import { Attendee as AttendeeModel } from '@prisma/client'
 import { IAttendeeQueryService } from '@/domain/interface/IAttendeeQueryService'
 import { EnrollmentStatus } from '@/domain/valueObject/EnrollmentStatus'
 
-export class AttendeeQueryService
-  implements IAttendeeQueryService<PrismaClientType> {
+export class AttendeeQueryService implements IAttendeeQueryService {
+  constructor(public readonly client: PrismaClientType) {}
   public async findAttendeeById(
-    client: PrismaClientType,
     id: UUID,
   ): Promise<Attendee | QueryError | null> {
     try {
-      const dbAttendeeModel = await client.attendee.findUnique({
+      const dbAttendeeModel = await this.client.attendee.findUnique({
         where: { id: id.toString() },
       })
       if (dbAttendeeModel === null) {
@@ -28,11 +27,10 @@ export class AttendeeQueryService
     return null
   }
   public async findAttendeeByEmail(
-    client: PrismaClientType,
     email: string,
   ): Promise<Attendee | QueryError | null> {
     try {
-      const dbAttendeeModel = await client.attendee.findFirst({
+      const dbAttendeeModel = await this.client.attendee.findFirst({
         where: { email: email },
       })
       if (dbAttendeeModel === null) {
@@ -47,11 +45,10 @@ export class AttendeeQueryService
     return null
   }
   public async findAttendeesByTeamId(
-    client: PrismaClientType,
     teamId: string,
   ): Promise<QueryError | Attendee[]> {
     try {
-      const attendeeModel = await client.attendee.findMany({
+      const attendeeModel = await this.client.attendee.findMany({
         where: {
           PairAttendeeList: {
             some: {
@@ -80,11 +77,9 @@ export class AttendeeQueryService
     }
     return []
   }
-  public async findAllAttendees(
-    client: PrismaClientType,
-  ): Promise<QueryError | Attendee[]> {
+  public async findAllAttendees(): Promise<QueryError | Attendee[]> {
     try {
-      const attendeeModel = await client.attendee.findMany({
+      const attendeeModel = await this.client.attendee.findMany({
         include: {
           PairAttendeeList: true,
           AttendeeAttachedTask: true,
@@ -101,11 +96,10 @@ export class AttendeeQueryService
     return []
   }
   public async findAttendeesByIds(
-    client: PrismaClientType,
     ids: UUID[],
   ): Promise<QueryError | Attendee[]> {
     try {
-      const attendeeModel = await client.attendee.findMany({
+      const attendeeModel = await this.client.attendee.findMany({
         where: {
           id: {
             in: ids.map((id) => id.toString()),

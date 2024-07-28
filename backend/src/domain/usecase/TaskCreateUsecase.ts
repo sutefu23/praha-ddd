@@ -11,7 +11,6 @@ import { ITaskRepository } from '../interface/ITaskRepository'
 
 export class TaskCreateUsecase {
   constructor(
-    private readonly repositoryClient: unknown,
     private readonly taskRepository: ITaskRepository,
     private readonly taskQueryService: ITaskQueryService,
   ) {}
@@ -20,7 +19,6 @@ export class TaskCreateUsecase {
     taskProps: CreateTaskProps,
   ): Promise<Task | InvalidParameterError | RepositoryError> {
     const hasTask = await this.taskQueryService.findTaskByTaskNumber(
-      this.repositoryClient,
       taskProps.taskNumber,
     )
     if (hasTask instanceof QueryError) {
@@ -33,7 +31,7 @@ export class TaskCreateUsecase {
 
     const task = Task.create(taskProps)
 
-    const res = await this.taskRepository.save(this.repositoryClient, task)
+    const res = await this.taskRepository.save(task)
 
     if (res instanceof RepositoryError) {
       return res // as RepositoryError

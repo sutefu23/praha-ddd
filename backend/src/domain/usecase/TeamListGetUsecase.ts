@@ -4,15 +4,10 @@ import { QueryError } from '../error/DomainError'
 import { ITeamQueryService } from '../interface/ITeamQueryService'
 
 export class TeamListGetUsecase {
-  constructor(
-    private readonly repositoryClient: unknown,
-    private readonly teamQueryService: ITeamQueryService,
-  ) {}
+  constructor(private readonly teamQueryService: ITeamQueryService) {}
 
   async exec(): Promise<Team[] | QueryError> {
-    const teams = await this.teamQueryService.findAllTeams(
-      this.repositoryClient,
-    )
+    const teams = await this.teamQueryService.findAllTeams()
     if (teams instanceof QueryError) {
       return teams // as QueryError
     }

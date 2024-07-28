@@ -19,13 +19,11 @@ export type PairModelWithAttendee = {
   } & PairAttendeeList)[]
 } & PairModel
 
-export class PairQueryService implements IPairQueryService<PrismaClientType> {
-  public async findPairByName(
-    client: PrismaClientType,
-    name: string,
-  ): Promise<Pair | QueryError | null> {
+export class PairQueryService implements IPairQueryService {
+  constructor(public readonly client: PrismaClientType) {}
+  public async findPairByName(name: string): Promise<Pair | QueryError | null> {
     try {
-      const pairModel = await client.pair.findFirst({
+      const pairModel = await this.client.pair.findFirst({
         where: { name: name },
         include: {
           PairAttendeeList: {
@@ -44,12 +42,9 @@ export class PairQueryService implements IPairQueryService<PrismaClientType> {
     }
     return null
   }
-  public async findPairById(
-    client: PrismaClientType,
-    id: UUID,
-  ): Promise<Pair | QueryError | null> {
+  public async findPairById(id: UUID): Promise<Pair | QueryError | null> {
     try {
-      const pairModel = await client.pair.findUnique({
+      const pairModel = await this.client.pair.findUnique({
         where: { id: id.toString() },
         include: {
           PairAttendeeList: {
@@ -69,11 +64,10 @@ export class PairQueryService implements IPairQueryService<PrismaClientType> {
     return null
   }
   public async findAttendeesByPairName(
-    client: PrismaClientType,
     name: string,
   ): Promise<Pair | QueryError | null> {
     try {
-      const pairModelWithAttendee = await client.pair.findFirst({
+      const pairModelWithAttendee = await this.client.pair.findFirst({
         where: { name: name },
         include: {
           PairAttendeeList: {
@@ -93,11 +87,10 @@ export class PairQueryService implements IPairQueryService<PrismaClientType> {
     return null
   }
   public async findPairByAttendeeId(
-    client: PrismaClientType,
     attendeeId: UUID,
   ): Promise<Pair | QueryError | null> {
     try {
-      const pairModel = await client.pair.findFirst({
+      const pairModel = await this.client.pair.findFirst({
         where: {
           PairAttendeeList: {
             some: {
@@ -123,11 +116,10 @@ export class PairQueryService implements IPairQueryService<PrismaClientType> {
     return null
   }
   public async findPairsByPairIds(
-    client: PrismaClientType,
     pairIds: UUID[],
   ): Promise<Pair[] | QueryError> {
     try {
-      const pairModels = await client.pair.findMany({
+      const pairModels = await this.client.pair.findMany({
         where: {
           id: {
             in: pairIds.map((id) => id.toString()),
@@ -147,11 +139,9 @@ export class PairQueryService implements IPairQueryService<PrismaClientType> {
     }
     return new QueryError('Failed to fetch pairs')
   }
-  public async findAllPairs(
-    client: PrismaClientType,
-  ): Promise<QueryError | PairCollection> {
+  public async findAllPairs(): Promise<QueryError | PairCollection> {
     try {
-      const pairModels = await client.pair.findMany({
+      const pairModels = await this.client.pair.findMany({
         include: {
           PairAttendeeList: {
             include: { attendee: true },

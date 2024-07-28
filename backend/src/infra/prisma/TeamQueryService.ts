@@ -7,6 +7,7 @@ import { ITeamQueryService } from '@/domain/interface/ITeamQueryService'
 import { TeamCollection } from '@/domain/entity/collection/TeamCollection'
 import { TeamName } from '@/domain/valueObject/TeamName'
 import { PairModelToEntity, PairModelWithAttendee } from './PairQueryService'
+import { PairCollection } from '@/domain/entity/collection/PairCollection'
 
 export type TeamModelWithPair = {
   TeamPairList: ({
@@ -14,13 +15,14 @@ export type TeamModelWithPair = {
   } & TeamPairList)[]
 } & TeamModel
 
-export class TeamQueryService implements ITeamQueryService<PrismaClientType> {
+export class TeamQueryService implements ITeamQueryService {
+  constructor(public readonly client: PrismaClientType) {}
+
   public async findTeamsByAttendeeId(
-    client: PrismaClientType,
     attendeeId: UUID,
   ): Promise<QueryError | Team | null> {
     try {
-      const teamModel = await client.team.findFirst({
+      const teamModel = await this.client.team.findFirst({
         where: {
           TeamPairList: {
             some: {
@@ -55,12 +57,9 @@ export class TeamQueryService implements ITeamQueryService<PrismaClientType> {
     }
     return null
   }
-  public async findTeamById(
-    client: PrismaClientType,
-    id: UUID,
-  ): Promise<Team | QueryError | null> {
+  public async findTeamById(id: UUID): Promise<Team | QueryError | null> {
     try {
-      const teamModel = await client.team.findUnique({
+      const teamModel = await this.client.team.findUnique({
         where: { id: id.toString() },
         include: {
           TeamPairList: {
@@ -84,11 +83,10 @@ export class TeamQueryService implements ITeamQueryService<PrismaClientType> {
     return null
   }
   public async findTeamsByPairId(
-    client: PrismaClientType,
     attendeeId: UUID,
   ): Promise<Team | QueryError | null> {
     try {
-      const teamModel = await client.team.findFirst({
+      const teamModel = await this.client.team.findFirst({
         where: {
           TeamPairList: {
             some: {
@@ -119,11 +117,9 @@ export class TeamQueryService implements ITeamQueryService<PrismaClientType> {
     }
     return null
   }
-  public async findAllTeams(
-    client: PrismaClientType,
-  ): Promise<QueryError | TeamCollection> {
+  public async findAllTeams(): Promise<QueryError | TeamCollection> {
     try {
-      const teamModels = await client.team.findMany({
+      const teamModels = await this.client.team.findMany({
         include: {
           TeamPairList: {
             include: {
@@ -134,7 +130,7 @@ export class TeamQueryService implements ITeamQueryService<PrismaClientType> {
           },
         },
       })
-      return new TeamCollection(
+      return TeamCollection.create(
         teamModels.map((teamModel) => TeamModelToEntity(teamModel)),
       )
     } catch (e) {
@@ -144,12 +140,9 @@ export class TeamQueryService implements ITeamQueryService<PrismaClientType> {
     }
     return new QueryError('Unknown error')
   }
-  public async findTeamByName(
-    client: PrismaClientType,
-    name: string,
-  ): Promise<Team | QueryError | null> {
+  public async findTeamByName(name: string): Promise<Team | QueryError | null> {
     try {
-      const teamModel = await client.team.findFirst({
+      const teamModel = await this.client.team.findFirst({
         where: { name: name },
         include: {
           TeamPairList: {
@@ -181,6 +174,6 @@ function TeamModelToEntity(teamModel: TeamModelWithPair): Team {
   return Team.regen({
     id: UUID.mustParse(teamModel.id),
     name: TeamName.mustParse(teamModel.name),
-    pairs: teamPairList,
+    pairs: PairCollection.create(teamPairList),
   })
 }

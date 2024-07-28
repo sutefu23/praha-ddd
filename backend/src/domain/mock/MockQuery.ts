@@ -16,8 +16,10 @@ import { ITeamQueryService } from '../interface/ITeamQueryService'
 import { TeamCollection } from '../entity/collection/TeamCollection'
 import { IPairQueryService } from '../interface/IPairQueryService'
 import { PairCollection } from '../entity/collection/PairCollection'
+import { repositoryClientMock } from './MockDBClient'
 
 export const attendeeQueryServiceMockSuccess: IAttendeeQueryService = {
+  client: repositoryClientMock,
   findAttendeeById: jest.fn().mockResolvedValue(AttendeeMockData1),
   findAttendeeByEmail: jest.fn().mockResolvedValue(AttendeeMockData1),
   findAttendeesByTeamId: jest
@@ -32,6 +34,7 @@ export const attendeeQueryServiceMockSuccess: IAttendeeQueryService = {
 }
 
 export const attendeeQueryServiceMockNotFound: IAttendeeQueryService = {
+  client: repositoryClientMock,
   findAttendeeById: jest.fn().mockResolvedValue(null),
   findAttendeeByEmail: jest.fn().mockResolvedValue(null),
   findAttendeesByTeamId: jest.fn().mockResolvedValue(null),
@@ -40,6 +43,7 @@ export const attendeeQueryServiceMockNotFound: IAttendeeQueryService = {
 }
 
 export const attendeeQueryServiceMockError: IAttendeeQueryService = {
+  client: repositoryClientMock,
   findAttendeeById: jest.fn().mockResolvedValue(new QueryError('reason')),
   findAttendeeByEmail: jest.fn().mockResolvedValue(new QueryError('reason')),
   findAttendeesByTeamId: jest.fn().mockResolvedValue(new QueryError('reason')),
@@ -48,23 +52,27 @@ export const attendeeQueryServiceMockError: IAttendeeQueryService = {
 }
 
 export const taskQueryServiceMockSuccess: ITaskQueryService = {
+  client: repositoryClientMock,
   findTaskById: jest.fn().mockResolvedValue(TaskMockData1),
   findTaskByTaskNumber: jest.fn().mockResolvedValue(TaskMockData1),
   findTasksByAttendeeId: jest.fn().mockResolvedValue([TaskMockData1]),
 }
 export const taskQueryServiceMockNotFound: ITaskQueryService = {
+  client: repositoryClientMock,
   findTaskById: jest.fn().mockResolvedValue(null),
   findTaskByTaskNumber: jest.fn().mockResolvedValue(null),
   findTasksByAttendeeId: jest.fn().mockResolvedValue([]),
 }
 
 export const taskQueryServiceMockError: ITaskQueryService = {
+  client: repositoryClientMock,
   findTaskById: jest.fn().mockResolvedValue(new QueryError('reason')),
   findTaskByTaskNumber: jest.fn().mockResolvedValue(new QueryError('reason')),
   findTasksByAttendeeId: jest.fn().mockResolvedValue(new QueryError('reason')),
 }
 
 export const attendeeAttachedTaskQueryServiceSuccess: IAttendeeAttachedTaskQueryService = {
+  client: repositoryClientMock,
   findByTaskAndAttendeeId: jest
     .fn()
     .mockResolvedValue(AttendeeAttachedTaskMockData1),
@@ -75,11 +83,13 @@ export const attendeeAttachedTaskQueryServiceSuccess: IAttendeeAttachedTaskQuery
 }
 
 export const attendeeAttachedTaskQueryServiceNotFound: IAttendeeAttachedTaskQueryService = {
+  client: repositoryClientMock,
   findByTaskAndAttendeeId: jest.fn().mockResolvedValue(null),
   findByTaskStatus: jest.fn().mockResolvedValue(null),
 }
 
 export const attendeeAttachedTaskQueryServiceError: IAttendeeAttachedTaskQueryService = {
+  client: repositoryClientMock,
   findByTaskAndAttendeeId: jest
     .fn()
     .mockResolvedValue(new QueryError('reason')),
@@ -87,6 +97,7 @@ export const attendeeAttachedTaskQueryServiceError: IAttendeeAttachedTaskQuerySe
 }
 
 export const teamQueryServiceMockSuccess: ITeamQueryService = {
+  client: repositoryClientMock,
   findTeamById: jest.fn().mockResolvedValue(TeamMockDataA),
   findTeamsByAttendeeId: jest.fn().mockResolvedValue(TeamMockDataA),
   findAllTeams: jest.fn().mockResolvedValue(TeamCollectionMockData),
@@ -94,6 +105,7 @@ export const teamQueryServiceMockSuccess: ITeamQueryService = {
 }
 
 export const teamQueryServiceMockNotFound: ITeamQueryService = {
+  client: repositoryClientMock,
   findTeamById: jest.fn().mockResolvedValue(null),
   findTeamsByAttendeeId: jest.fn().mockResolvedValue(null),
   findAllTeams: jest.fn().mockResolvedValue(TeamCollection.create([])),
@@ -101,6 +113,7 @@ export const teamQueryServiceMockNotFound: ITeamQueryService = {
 }
 
 export const teamQueryServiceMockError: ITeamQueryService = {
+  client: repositoryClientMock,
   findTeamById: jest.fn().mockResolvedValue(new QueryError('reason')),
   findTeamsByAttendeeId: jest.fn().mockResolvedValue(new QueryError('reason')),
   findAllTeams: jest.fn().mockResolvedValue(new QueryError('reason')),
@@ -108,6 +121,7 @@ export const teamQueryServiceMockError: ITeamQueryService = {
 }
 
 export const pairQueryServiceMockSuccess: IPairQueryService = {
+  client: repositoryClientMock,
   findPairByName: jest.fn().mockResolvedValue(PairMockData1),
   findPairById: jest.fn().mockResolvedValue(PairMockData1),
   findAllPairs: jest
@@ -118,6 +132,7 @@ export const pairQueryServiceMockSuccess: IPairQueryService = {
 }
 
 export const pairQueryServiceMockNotFound: IPairQueryService = {
+  client: repositoryClientMock,
   findPairByName: jest.fn().mockResolvedValue(null),
   findPairById: jest.fn().mockResolvedValue(null),
   findAllPairs: jest.fn().mockResolvedValue(PairCollection.create([])),
@@ -126,6 +141,7 @@ export const pairQueryServiceMockNotFound: IPairQueryService = {
 }
 
 export const pairQueryServiceMockError: IPairQueryService = {
+  client: repositoryClientMock,
   findPairByName: jest.fn().mockResolvedValue(new QueryError('reason')),
   findPairById: jest.fn().mockResolvedValue(new QueryError('reason')),
   findAllPairs: jest.fn().mockResolvedValue(new QueryError('reason')),

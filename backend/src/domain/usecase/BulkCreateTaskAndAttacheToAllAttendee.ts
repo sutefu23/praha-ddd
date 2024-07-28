@@ -14,7 +14,6 @@ import { ITaskRepository } from '../interface/ITaskRepository'
 
 export class BulkCreateTaskAndAttacheToAllAttendee {
   constructor(
-    private readonly repositoryClient: unknown,
     private readonly taskRepository: ITaskRepository,
     private readonly attendeeQueryService: IAttendeeQueryService,
     private readonly attendeeAttachedTaskRepository: IAttendeeAttachedTaskRepository,
@@ -30,16 +29,14 @@ export class BulkCreateTaskAndAttacheToAllAttendee {
         taskNumber: index + taskNumberOffset,
       })
 
-      const res = await this.taskRepository.save(this.repositoryClient, task)
+      const res = await this.taskRepository.save(task)
       if (res instanceof RepositoryError) {
         return res
       }
       return task
     })
     const tasks = await Promise.all(taskPromises)
-    const attendees = await this.attendeeQueryService.findAllAttendees(
-      this.repositoryClient,
-    )
+    const attendees = await this.attendeeQueryService.findAllAttendees()
 
     if (attendees instanceof QueryError) {
       return attendees // as QueryError
@@ -59,7 +56,6 @@ export class BulkCreateTaskAndAttacheToAllAttendee {
           attendee,
         })
         const res = await this.attendeeAttachedTaskRepository.save(
-          this.repositoryClient,
           newAttendeeAttachedTask,
         )
         if (res instanceof RepositoryError) {

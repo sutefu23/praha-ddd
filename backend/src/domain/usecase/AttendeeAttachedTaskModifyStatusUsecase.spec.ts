@@ -30,25 +30,21 @@ jest.mock('../mock/MockDBClient')
 
 describe('AttendeeAttachedTaskModifyStatusUsecase', () => {
   const allSuccessUsecase = new AttendeeAttachedTaskModifyStatusUsecase(
-    repositoryClientMock,
     attendeeAttachedTaskRepositoryMockSuccess,
     attendeeAttachedTaskQueryServiceSuccess,
   )
 
   const queryErrorUsecase = new AttendeeAttachedTaskModifyStatusUsecase(
-    repositoryClientMock,
     attendeeAttachedTaskRepositoryMockSuccess,
     attendeeAttachedTaskQueryServiceError,
   )
 
   const queryNotFoundUsecase = new AttendeeAttachedTaskModifyStatusUsecase(
-    repositoryClientMock,
     attendeeAttachedTaskRepositoryMockSuccess,
     attendeeAttachedTaskQueryServiceNotFound,
   )
 
   const repositoryErrorUsecase = new AttendeeAttachedTaskModifyStatusUsecase(
-    repositoryClientMock,
     attendeeAttachedTaskRepositoryMockError,
     attendeeAttachedTaskQueryServiceSuccess,
   )

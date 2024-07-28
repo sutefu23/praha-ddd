@@ -29,7 +29,6 @@ import { PrahaRejoinAttendeeService } from '../service/PrahaRejoinAttendeeServic
 
 describe('AttendeeRejoinUsecase', () => {
   const allSuccessUsecase = new AttendeeRejoinUsecase(
-    repositoryClientMock,
     attendeeQueryServiceMockSuccess,
     teamQueryServiceMockSuccess,
     pairQueryServiceMockSuccess,
@@ -37,7 +36,6 @@ describe('AttendeeRejoinUsecase', () => {
   )
 
   const attendeeQueryErrorUsecase = new AttendeeRejoinUsecase(
-    repositoryClientMock,
     attendeeQueryServiceMockError,
     teamQueryServiceMockSuccess,
     pairQueryServiceMockSuccess,
@@ -45,7 +43,6 @@ describe('AttendeeRejoinUsecase', () => {
   )
 
   const attendeeNotFoundUsecase = new AttendeeRejoinUsecase(
-    repositoryClientMock,
     attendeeQueryServiceMockNotFound,
     teamQueryServiceMockSuccess,
     pairQueryServiceMockSuccess,
@@ -53,7 +50,6 @@ describe('AttendeeRejoinUsecase', () => {
   )
 
   const teamQueryErrorUsecase = new AttendeeRejoinUsecase(
-    repositoryClientMock,
     attendeeQueryServiceMockSuccess,
     teamQueryServiceMockError,
     pairQueryServiceMockSuccess,
@@ -61,7 +57,6 @@ describe('AttendeeRejoinUsecase', () => {
   )
 
   const teamNotFoundUsecase = new AttendeeRejoinUsecase(
-    repositoryClientMock,
     attendeeQueryServiceMockSuccess,
     teamQueryServiceMockNotFound,
     pairQueryServiceMockSuccess,
@@ -69,7 +64,6 @@ describe('AttendeeRejoinUsecase', () => {
   )
 
   const pairQueryErrorUsecase = new AttendeeRejoinUsecase(
-    repositoryClientMock,
     attendeeQueryServiceMockSuccess,
     teamQueryServiceMockSuccess,
     pairQueryServiceMockError,
@@ -77,7 +71,6 @@ describe('AttendeeRejoinUsecase', () => {
   )
 
   const pairNotFoundUsecase = new AttendeeRejoinUsecase(
-    repositoryClientMock,
     attendeeQueryServiceMockSuccess,
     teamQueryServiceMockSuccess,
     pairQueryServiceMockNotFound,
@@ -85,7 +78,6 @@ describe('AttendeeRejoinUsecase', () => {
   )
 
   const repositoryErrorUsecase = new AttendeeRejoinUsecase(
-    repositoryClientMock,
     attendeeQueryServiceMockSuccess,
     teamQueryServiceMockSuccess,
     pairQueryServiceMockSuccess,

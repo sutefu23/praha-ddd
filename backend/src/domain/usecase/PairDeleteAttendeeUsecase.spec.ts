@@ -23,42 +23,36 @@ import { PairAttendeeTooLessError } from '../entity/collection/PairAttendeeColle
 
 describe('PairDeleteAttendeeUsecase', () => {
   const allSuccessUsecase = new PairDeleteAttendeeUsecase(
-    repositoryClientMock,
     pairRepositoryMockSuccess,
     pairQueryServiceMockSuccess,
     attendeeQueryServiceMockSuccess,
   )
 
   const pairNotFoundUsecase = new PairDeleteAttendeeUsecase(
-    repositoryClientMock,
     pairRepositoryMockSuccess,
     pairQueryServiceMockNotFound,
     attendeeQueryServiceMockSuccess,
   )
 
   const pairQueryErrorUsecase = new PairDeleteAttendeeUsecase(
-    repositoryClientMock,
     pairRepositoryMockSuccess,
     pairQueryServiceMockError,
     attendeeQueryServiceMockSuccess,
   )
 
   const attendeeNotFoundUsecase = new PairDeleteAttendeeUsecase(
-    repositoryClientMock,
     pairRepositoryMockSuccess,
     pairQueryServiceMockSuccess,
     attendeeQueryServiceMockNotFound,
   )
 
   const attendeeQueryErrorUsecase = new PairDeleteAttendeeUsecase(
-    repositoryClientMock,
     pairRepositoryMockSuccess,
     pairQueryServiceMockSuccess,
     attendeeQueryServiceMockError,
   )
 
   const pairRepositoryErrorUsecase = new PairDeleteAttendeeUsecase(
-    repositoryClientMock,
     pairRepositoryMockError,
     pairQueryServiceMockSuccess,
     attendeeQueryServiceMockSuccess,

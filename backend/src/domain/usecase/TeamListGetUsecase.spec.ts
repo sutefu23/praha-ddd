@@ -1,5 +1,4 @@
 import { TeamDeletePairUsecase } from './TeamDeletePairUsecase'
-import { repositoryClientMock } from '../mock/MockDBClient'
 import {
   teamQueryServiceMockSuccess,
   teamQueryServiceMockNotFound,
@@ -22,42 +21,36 @@ import { Team } from '../entity/Team'
 
 describe('TeamDeletePairUsecase', () => {
   const allSuccessUsecase = new TeamDeletePairUsecase(
-    repositoryClientMock,
     teamRepositoryMockSuccess,
     teamQueryServiceMockSuccess,
     pairQueryServiceMockSuccess,
   )
 
   const teamNotFoundUsecase = new TeamDeletePairUsecase(
-    repositoryClientMock,
     teamRepositoryMockSuccess,
     teamQueryServiceMockNotFound,
     pairQueryServiceMockSuccess,
   )
 
   const teamQueryErrorUsecase = new TeamDeletePairUsecase(
-    repositoryClientMock,
     teamRepositoryMockSuccess,
     teamQueryServiceMockError,
     pairQueryServiceMockSuccess,
   )
 
   const pairNotFoundUsecase = new TeamDeletePairUsecase(
-    repositoryClientMock,
     teamRepositoryMockSuccess,
     teamQueryServiceMockSuccess,
     pairQueryServiceMockNotFound,
   )
 
   const pairQueryErrorUsecase = new TeamDeletePairUsecase(
-    repositoryClientMock,
     teamRepositoryMockSuccess,
     teamQueryServiceMockSuccess,
     pairQueryServiceMockError,
   )
 
   const teamRepositoryErrorUsecase = new TeamDeletePairUsecase(
-    repositoryClientMock,
     teamRepositoryMockError,
     teamQueryServiceMockSuccess,
     pairQueryServiceMockSuccess,

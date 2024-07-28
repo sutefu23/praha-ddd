@@ -3,22 +3,11 @@ import { PairCollection } from '../entity/collection/PairCollection'
 import { QueryError } from '../error/DomainError'
 import { UUID } from '../valueObject/UUID'
 
-export interface IPairQueryService<ClientType = unknown> {
-  findPairById: (
-    client: ClientType,
-    id: UUID,
-  ) => Promise<Pair | null | QueryError>
-  findPairByName: (
-    client: ClientType,
-    name: string,
-  ) => Promise<Pair | null | QueryError>
-  findPairByAttendeeId: (
-    client: ClientType,
-    attendeeId: UUID,
-  ) => Promise<Pair | null | QueryError>
-  findPairsByPairIds: (
-    client: ClientType,
-    pairIds: UUID[],
-  ) => Promise<Pair[] | QueryError>
-  findAllPairs: (client: ClientType) => Promise<PairCollection | QueryError>
+export interface IPairQueryService {
+  client: unknown
+  findPairById: (id: UUID) => Promise<Pair | null | QueryError>
+  findPairByName: (name: string) => Promise<Pair | null | QueryError>
+  findPairByAttendeeId: (attendeeId: UUID) => Promise<Pair | null | QueryError>
+  findPairsByPairIds: (pairIds: UUID[]) => Promise<Pair[] | QueryError>
+  findAllPairs: () => Promise<PairCollection | QueryError>
 }

@@ -12,14 +12,10 @@ jest.mock('../mock/MockDBClient')
 
 describe('AttendeeListGetUsecase', () => {
   const successUsecase = new AttendeeListGetUsecase(
-    repositoryClientMock,
     attendeeQueryServiceMockSuccess,
   )
 
-  const errorUsecase = new AttendeeListGetUsecase(
-    repositoryClientMock,
-    attendeeQueryServiceMockError,
-  )
+  const errorUsecase = new AttendeeListGetUsecase(attendeeQueryServiceMockError)
 
   beforeEach(() => {
     jest.clearAllMocks()

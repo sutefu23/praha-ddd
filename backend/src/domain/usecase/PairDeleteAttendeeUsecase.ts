@@ -13,7 +13,6 @@ import { IPairRepository } from '../interface/IPairRepository'
 
 export class PairDeleteAttendeeUsecase {
   constructor(
-    private readonly repositoryClient: unknown,
     private readonly pairRepository: IPairRepository,
     private readonly pairQueryService: IPairQueryService,
     private readonly attendeeQueryService: IAttendeeQueryService,
@@ -23,10 +22,7 @@ export class PairDeleteAttendeeUsecase {
     pairId: Pair['id'],
     attendeeId: Attendee['id'],
   ): Promise<Pair | InvalidParameterError | RepositoryError> {
-    const pair = await this.pairQueryService.findPairById(
-      this.repositoryClient,
-      pairId,
-    )
+    const pair = await this.pairQueryService.findPairById(pairId)
     if (pair instanceof QueryError) {
       return pair // as QueryError
     }
@@ -36,7 +32,6 @@ export class PairDeleteAttendeeUsecase {
     }
 
     const attendee = await this.attendeeQueryService.findAttendeeById(
-      this.repositoryClient,
       attendeeId,
     )
 
@@ -54,7 +49,7 @@ export class PairDeleteAttendeeUsecase {
       return newPair // as PairAttendeeTooLessError
     }
 
-    const res = await this.pairRepository.save(this.repositoryClient, newPair)
+    const res = await this.pairRepository.save(newPair)
     if (res instanceof RepositoryError) {
       return res // as RepositoryError
     }

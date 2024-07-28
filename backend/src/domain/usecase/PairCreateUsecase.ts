@@ -18,7 +18,6 @@ import { PairName } from '../valueObject/PairName'
 
 export class PairCreateUsecase {
   constructor(
-    private readonly repositoryClient: unknown,
     private readonly pairRepository: IPairRepository,
     private readonly pairQueryService: IPairQueryService,
     private readonly attendeeQueryService: IAttendeeQueryService,
@@ -28,10 +27,7 @@ export class PairCreateUsecase {
     pairName: PairName,
     attendeeIds: Attendee['id'][],
   ): Promise<Pair | InvalidParameterError | RepositoryError> {
-    const hasPair = await this.pairQueryService.findPairByName(
-      this.repositoryClient,
-      pairName.value,
-    )
+    const hasPair = await this.pairQueryService.findPairByName(pairName.value)
     if (hasPair instanceof QueryError) {
       return hasPair // as QueryError
     }
@@ -41,7 +37,6 @@ export class PairCreateUsecase {
     }
 
     const attendees = await this.attendeeQueryService.findAttendeesByIds(
-      this.repositoryClient,
       attendeeIds,
     )
 
@@ -60,7 +55,7 @@ export class PairCreateUsecase {
     if (pair instanceof UnPemitedOperationError) {
       return pair // as UnPemitedOperationError
     }
-    const res = await this.pairRepository.save(this.repositoryClient, pair)
+    const res = await this.pairRepository.save(pair)
     if (res instanceof RepositoryError) {
       return res // as RepositoryError
     }

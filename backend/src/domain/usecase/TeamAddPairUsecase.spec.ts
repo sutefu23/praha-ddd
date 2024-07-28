@@ -22,42 +22,36 @@ import { Team } from '../entity/Team'
 
 describe('TeamAddPairUsecase', () => {
   const allSuccessUsecase = new TeamAddPairUsecase(
-    repositoryClientMock,
     teamRepositoryMockSuccess,
     teamQueryServiceMockSuccess,
     pairQueryServiceMockSuccess,
   )
 
   const teamNotFoundUsecase = new TeamAddPairUsecase(
-    repositoryClientMock,
     teamRepositoryMockSuccess,
     teamQueryServiceMockNotFound,
     pairQueryServiceMockSuccess,
   )
 
   const teamQueryErrorUsecase = new TeamAddPairUsecase(
-    repositoryClientMock,
     teamRepositoryMockSuccess,
     teamQueryServiceMockError,
     pairQueryServiceMockSuccess,
   )
 
   const pairNotFoundUsecase = new TeamAddPairUsecase(
-    repositoryClientMock,
     teamRepositoryMockSuccess,
     teamQueryServiceMockSuccess,
     pairQueryServiceMockNotFound,
   )
 
   const pairQueryErrorUsecase = new TeamAddPairUsecase(
-    repositoryClientMock,
     teamRepositoryMockSuccess,
     teamQueryServiceMockSuccess,
     pairQueryServiceMockError,
   )
 
   const teamRepositoryErrorUsecase = new TeamAddPairUsecase(
-    repositoryClientMock,
     teamRepositoryMockError,
     teamQueryServiceMockSuccess,
     pairQueryServiceMockSuccess,

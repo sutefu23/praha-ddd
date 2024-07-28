@@ -5,13 +5,11 @@ import { PrismaClientType } from './db'
 import type { Task as TaskModel } from '@prisma/client'
 import { ITaskQueryService } from '@/domain/interface/ITaskQueryService'
 
-export class TaskQueryService implements ITaskQueryService<PrismaClientType> {
-  public async findTaskById(
-    client: PrismaClientType,
-    id: UUID,
-  ): Promise<QueryError | Task | null> {
+export class TaskQueryService implements ITaskQueryService {
+  constructor(public readonly client: PrismaClientType) {}
+  public async findTaskById(id: UUID): Promise<QueryError | Task | null> {
     try {
-      const taskModel = await client.task.findUnique({
+      const taskModel = await this.client.task.findUnique({
         where: { id: id.toString() },
       })
       if (taskModel === null) {
@@ -26,11 +24,10 @@ export class TaskQueryService implements ITaskQueryService<PrismaClientType> {
     return null
   }
   public async findTaskByTaskNumber(
-    client: PrismaClientType,
     taskNumber: number,
   ): Promise<Task | QueryError | null> {
     try {
-      const taskModel = await client.task.findFirst({
+      const taskModel = await this.client.task.findFirst({
         where: { taskNumber: taskNumber },
       })
       if (taskModel === null) {
@@ -45,11 +42,10 @@ export class TaskQueryService implements ITaskQueryService<PrismaClientType> {
     return null
   }
   public async findTasksByAttendeeId(
-    client: PrismaClientType,
     attendeeId: UUID,
   ): Promise<QueryError | Task[] | null> {
     try {
-      const taskModel = await client.task.findMany({
+      const taskModel = await this.client.task.findMany({
         where: {
           AttendeeAttachedTask: {
             some: {

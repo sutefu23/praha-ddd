@@ -12,15 +12,9 @@ import { PairCollection } from '../entity/collection/PairCollection'
 jest.mock('../mock/MockDBClient')
 
 describe('PairListGetUsecase', () => {
-  const successUsecase = new PairListGetUsecase(
-    repositoryClientMock,
-    pairQueryServiceMockSuccess,
-  )
+  const successUsecase = new PairListGetUsecase(pairQueryServiceMockSuccess)
 
-  const errorUsecase = new PairListGetUsecase(
-    repositoryClientMock,
-    pairQueryServiceMockError,
-  )
+  const errorUsecase = new PairListGetUsecase(pairQueryServiceMockError)
 
   beforeEach(() => {
     jest.clearAllMocks()

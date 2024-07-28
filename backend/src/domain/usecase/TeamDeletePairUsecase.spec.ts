@@ -11,13 +11,11 @@ import { PairMockData1, TeamMockDataA } from '../mock/MockData'
 
 describe('TeamDeletePairUsecase', () => {
   let teamDeletePairUsecase: TeamDeletePairUsecase
-  let mockRepositoryClient: unknown
   let mockTeamRepository: jest.Mocked<ITeamRepository>
   let mockTeamQueryService: jest.Mocked<ITeamQueryService>
   let mockPairQueryService: jest.Mocked<IPairQueryService>
 
   beforeEach(() => {
-    mockRepositoryClient = {}
     mockTeamRepository = {
       save: jest.fn(),
     } as any
@@ -29,7 +27,6 @@ describe('TeamDeletePairUsecase', () => {
     } as any
 
     teamDeletePairUsecase = new TeamDeletePairUsecase(
-      mockRepositoryClient,
       mockTeamRepository,
       mockTeamQueryService,
       mockPairQueryService,
@@ -52,15 +49,13 @@ describe('TeamDeletePairUsecase', () => {
     )
 
     expect(mockTeamQueryService.findTeamById).toHaveBeenCalledWith(
-      mockRepositoryClient,
       TeamMockDataA.id,
     )
     expect(mockPairQueryService.findPairById).toHaveBeenCalledWith(
-      mockRepositoryClient,
       PairMockData1.id,
     )
     expect(mockTeam.deletePair).toHaveBeenCalledWith(mockPair)
-    expect(mockTeamRepository.save).toHaveBeenCalledWith(mockRepositoryClient, {
+    expect(mockTeamRepository.save).toHaveBeenCalledWith({
       id: 'newTeamId',
     })
     expect(result).toEqual({ id: 'newTeamId' })

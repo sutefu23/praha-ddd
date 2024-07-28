@@ -19,14 +19,14 @@ export type AttendeeAttachedTaskModelWithTaskAndAttendee = {
 } & AttendeeAttachedTaskModel
 
 export class AttendeeAttachedTaskQueryService
-  implements IAttendeeAttachedTaskQueryService<PrismaClientType> {
+  implements IAttendeeAttachedTaskQueryService {
+  constructor(public readonly client: PrismaClientType) {}
   public async findByTaskAndAttendeeId(
-    client: PrismaClientType,
     TaskId: UUID,
     AttendeeId: UUID,
   ): Promise<QueryError | AttendeeAttachedTask | null> {
     try {
-      const attendeeAttachedTaskModel = await client.attendeeAttachedTask.findFirst(
+      const attendeeAttachedTaskModel = await this.client.attendeeAttachedTask.findFirst(
         {
           where: {
             taskId: TaskId.toString(),
@@ -50,7 +50,6 @@ export class AttendeeAttachedTaskQueryService
     return null
   }
   public async findByTaskStatus(
-    client: PrismaClientType,
     TaskStatus: TaskStatus,
     PageQuery: { page: number; perPage: number },
   ): Promise<
@@ -60,7 +59,7 @@ export class AttendeeAttachedTaskQueryService
   > {
     try {
       const [attendeeAttachedTaskModels, total] = await Promise.all([
-        client.attendeeAttachedTask.findMany({
+        this.client.attendeeAttachedTask.findMany({
           where: {
             status: TaskStatus.toString(),
           },
@@ -71,7 +70,7 @@ export class AttendeeAttachedTaskQueryService
           skip: PageQuery.page * PageQuery.perPage,
           take: PageQuery.perPage,
         }),
-        client.attendeeAttachedTask.count({
+        this.client.attendeeAttachedTask.count({
           where: {
             status: TaskStatus.toString(),
           },

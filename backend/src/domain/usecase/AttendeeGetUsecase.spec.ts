@@ -25,25 +25,21 @@ describe('AttendeeCreateUsecase', () => {
   }
 
   const allSuccessUsecase = new AttendeeCreateUsecase(
-    repositoryClientMock,
     attendeeRepositoryMockSuccess,
     attendeeQueryServiceMockNotFound,
   )
 
   const emailQuerySuccessUsecase = new AttendeeCreateUsecase(
-    repositoryClientMock,
     attendeeRepositoryMockSuccess,
     attendeeQueryServiceMockSuccess,
   )
 
   const queryErrorUsecase = new AttendeeCreateUsecase(
-    repositoryClientMock,
     attendeeRepositoryMockSuccess,
     attendeeQueryServiceMockError,
   )
 
   const repositoryErrorUsecase = new AttendeeCreateUsecase(
-    repositoryClientMock,
     attendeeRepositoryMockError,
     attendeeQueryServiceMockNotFound,
   )

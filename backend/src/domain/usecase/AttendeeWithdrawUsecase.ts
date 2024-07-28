@@ -20,8 +20,6 @@ import { IAttendeeRepository } from '../interface/IAttendeeRepository'
 
 export class AttendeeWithdrawUsecase {
   constructor(
-    private readonly repositoryClient: unknown,
-    private readonly mailClient: unknown,
     private readonly attendeeQueryService: IAttendeeQueryService,
     private readonly teamQueryService: ITeamQueryService,
     private readonly pairQueryService: IPairQueryService,
@@ -38,7 +36,6 @@ export class AttendeeWithdrawUsecase {
     Attendee | InvalidParameterError | QueryError | QueryNotFoundError
   > {
     const attendee = await this.attendeeQueryService.findAttendeeById(
-      this.repositoryClient,
       targetAttendeeID,
     )
     const enrollment_status = EnrollmentStatus.new(status)
@@ -56,11 +53,7 @@ export class AttendeeWithdrawUsecase {
 
     const modifiedAttendee = attendee.setEnrollmentStatus(enrollment_status)
 
-    const team = await this.teamQueryService.findTeamsByAttendeeId(
-      this.repositoryClient,
-
-      attendee.id,
-    )
+    const team = await this.teamQueryService.findTeamsByAttendeeId(attendee.id)
     if (team instanceof QueryError) {
       return team // as QueryError
     }
@@ -68,11 +61,7 @@ export class AttendeeWithdrawUsecase {
       return new QueryNotFoundError('所属するチームが見つかりません。')
     }
 
-    const pair = await this.pairQueryService.findPairByAttendeeId(
-      this.repositoryClient,
-
-      attendee.id,
-    )
+    const pair = await this.pairQueryService.findPairByAttendeeId(attendee.id)
     if (pair instanceof QueryError) {
       return pair // as QueryError
     }
@@ -80,9 +69,7 @@ export class AttendeeWithdrawUsecase {
       return new QueryNotFoundError('所属するペアが見つかりません。')
     }
 
-    const allTeams = await this.teamQueryService.findAllTeams(
-      this.repositoryClient,
-    )
+    const allTeams = await this.teamQueryService.findAllTeams()
     if (allTeams instanceof QueryError) {
       return allTeams // as QueryError
     }
@@ -91,7 +78,6 @@ export class AttendeeWithdrawUsecase {
       attendee,
       () => {
         const mailRes = this.sendMailAction.sendToAdmin(
-          this.mailClient,
           `${modifiedAttendee.name}さんがペアを辞めました。`,
           `${modifiedAttendee.name}さんの在籍ステータスが${
             modifiedAttendee.enrollment_status.value
@@ -112,7 +98,6 @@ export class AttendeeWithdrawUsecase {
       },
       () => {
         const mailRes = this.sendMailAction.sendToAdmin(
-          this.mailClient,
           `ペア${pair.name.value}の自動割当が出来ません。`,
           `${modifiedAttendee.name}さんの在籍ステータスが${
             modifiedAttendee.enrollment_status.value
@@ -133,10 +118,7 @@ export class AttendeeWithdrawUsecase {
         }
       },
     )
-    const res = await this.attendeeRepository.save(
-      this.repositoryClient,
-      modifiedAttendee,
-    )
+    const res = await this.attendeeRepository.save(modifiedAttendee)
     if (res instanceof RepositoryError) {
       return res
     }

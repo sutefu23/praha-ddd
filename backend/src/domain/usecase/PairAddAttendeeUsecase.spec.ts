@@ -22,42 +22,36 @@ import { Pair, PairAttendeeTooManyError } from '../entity/Pair'
 
 describe('PairAddAttendeeUsecase', () => {
   const allSuccessUsecase = new PairAddAttendeeUsecase(
-    repositoryClientMock,
     pairRepositoryMockSuccess,
     pairQueryServiceMockSuccess,
     attendeeQueryServiceMockSuccess,
   )
 
   const pairNotFoundUsecase = new PairAddAttendeeUsecase(
-    repositoryClientMock,
     pairRepositoryMockSuccess,
     pairQueryServiceMockNotFound,
     attendeeQueryServiceMockSuccess,
   )
 
   const pairQueryErrorUsecase = new PairAddAttendeeUsecase(
-    repositoryClientMock,
     pairRepositoryMockSuccess,
     pairQueryServiceMockError,
     attendeeQueryServiceMockSuccess,
   )
 
   const attendeeNotFoundUsecase = new PairAddAttendeeUsecase(
-    repositoryClientMock,
     pairRepositoryMockSuccess,
     pairQueryServiceMockSuccess,
     attendeeQueryServiceMockNotFound,
   )
 
   const attendeeQueryErrorUsecase = new PairAddAttendeeUsecase(
-    repositoryClientMock,
     pairRepositoryMockSuccess,
     pairQueryServiceMockSuccess,
     attendeeQueryServiceMockError,
   )
 
   const pairRepositoryErrorUsecase = new PairAddAttendeeUsecase(
-    repositoryClientMock,
     pairRepositoryMockError,
     pairQueryServiceMockSuccess,
     attendeeQueryServiceMockSuccess,

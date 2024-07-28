@@ -2,7 +2,6 @@ import { AttendeeAttachedTask } from '../entity/AttendeeAttachedTask'
 import { QueryError, QueryNotFoundError } from '../error/DomainError'
 import { PageQuery } from '../interface/PageQuery'
 import { PageResponse } from '../interface/PageResponse'
-import { repositoryClientMock } from '../mock/MockDBClient'
 import { AttendeeAttachedTaskMockData1 } from '../mock/MockData'
 
 import {
@@ -18,17 +17,14 @@ import { AttendeeAttachedTaskGetUsecase } from './AttendeeAttachedTaskGetUsecase
 
 describe('AttendeeAttachedTaskAttachCreateUsecase', () => {
   const allSuccesUsecase = new AttendeeAttachedTaskGetUsecase(
-    repositoryClientMock,
     attendeeAttachedTaskQueryServiceSuccess,
   )
 
   const attendeeAttachedTaskQueryErrorUsecase = new AttendeeAttachedTaskGetUsecase(
-    repositoryClientMock,
     attendeeAttachedTaskQueryServiceError,
   )
 
   const attendeeAttachedTaskQueryNullUsecase = new AttendeeAttachedTaskGetUsecase(
-    repositoryClientMock,
     attendeeAttachedTaskQueryServiceNotFound,
   )
 

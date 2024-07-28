@@ -3,13 +3,13 @@ import { IAttendeeAttachedTaskRepository } from '@/domain/interface/IAttendeeAtt
 import { RepositoryError } from '@/domain/error/DomainError'
 import type { PrismaClientType } from './db'
 export class AttendeeAttachedTaskRepository
-  implements IAttendeeAttachedTaskRepository<PrismaClientType> {
+  implements IAttendeeAttachedTaskRepository {
+  constructor(public readonly client: PrismaClientType) {}
   public async save(
-    client: PrismaClientType,
     attendeeAttachedTask: AttendeeAttachedTask,
   ): Promise<void | RepositoryError> {
     try {
-      await client.attendeeAttachedTask.upsert({
+      await this.client.attendeeAttachedTask.upsert({
         where: { id: attendeeAttachedTask.id.toString() },
         update: {
           attendeeId: attendeeAttachedTask.attendee.id.toString(),

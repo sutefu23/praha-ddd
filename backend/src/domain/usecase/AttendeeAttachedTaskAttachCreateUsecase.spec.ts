@@ -1,4 +1,3 @@
-import { repositoryClientMock } from '../mock/MockDBClient'
 import { AttendeeAttachedTaskAttachCreateUsecase } from './AttendeeAttachedTaskAttachCreateUsecase'
 
 import {
@@ -25,42 +24,36 @@ jest.mock('../mock/MockDBClient')
 
 describe('AttendeeAttachedTaskAttachCreateUsecase', () => {
   const allSuccesUsecase = new AttendeeAttachedTaskAttachCreateUsecase(
-    repositoryClientMock,
     taskQueryServiceMockSuccess,
     attendeeQueryServiceMockSuccess,
     attendeeAttachedTaskRepositoryMockSuccess,
   )
 
   const taskQueryErrorUsecase = new AttendeeAttachedTaskAttachCreateUsecase(
-    repositoryClientMock,
     taskQueryServiceMockError,
     attendeeQueryServiceMockSuccess,
     attendeeAttachedTaskRepositoryMockSuccess,
   )
 
   const taskQueryNullUsecase = new AttendeeAttachedTaskAttachCreateUsecase(
-    repositoryClientMock,
     taskQueryServiceMockNotFound,
     attendeeQueryServiceMockSuccess,
     attendeeAttachedTaskRepositoryMockSuccess,
   )
 
   const attendeeQueryErrorUsecase = new AttendeeAttachedTaskAttachCreateUsecase(
-    repositoryClientMock,
     taskQueryServiceMockSuccess,
     attendeeQueryServiceMockError,
     attendeeAttachedTaskRepositoryMockSuccess,
   )
 
   const attendeeNullQueryUsecase = new AttendeeAttachedTaskAttachCreateUsecase(
-    repositoryClientMock,
     taskQueryServiceMockSuccess,
     attendeeQueryServiceMockNotFound,
     attendeeAttachedTaskRepositoryMockSuccess,
   )
 
   const attendeeAttachedTaskRepositoryErrorUsecase = new AttendeeAttachedTaskAttachCreateUsecase(
-    repositoryClientMock,
     taskQueryServiceMockSuccess,
     attendeeQueryServiceMockSuccess,
     attendeeAttachedTaskRepositoryMockError,

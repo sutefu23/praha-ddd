@@ -21,28 +21,24 @@ import { AttendeeAttachedTask } from '../entity/AttendeeAttachedTask'
 
 describe('BulkCreateTaskAndAttacheToAllAttendee', () => {
   const allSuccessUsecase = new BulkCreateTaskAndAttacheToAllAttendee(
-    repositoryClientMock,
     taskRepositoryMockSuccess,
     attendeeQueryServiceMockSuccess,
     attendeeAttachedTaskRepositoryMockSuccess,
   )
 
   const taskRepositoryErrorUsecase = new BulkCreateTaskAndAttacheToAllAttendee(
-    repositoryClientMock,
     taskRepositoryMockError,
     attendeeQueryServiceMockSuccess,
     attendeeAttachedTaskRepositoryMockSuccess,
   )
 
   const attendeeQueryErrorUsecase = new BulkCreateTaskAndAttacheToAllAttendee(
-    repositoryClientMock,
     taskRepositoryMockSuccess,
     attendeeQueryServiceMockError,
     attendeeAttachedTaskRepositoryMockSuccess,
   )
 
   const attendeeAttachedTaskRepositoryErrorUsecase = new BulkCreateTaskAndAttacheToAllAttendee(
-    repositoryClientMock,
     taskRepositoryMockSuccess,
     attendeeQueryServiceMockSuccess,
     attendeeAttachedTaskRepositoryMockError,
